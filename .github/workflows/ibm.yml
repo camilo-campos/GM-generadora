@@ -21,4 +21,8 @@ jobs:
           project: "GM-Dashboard"
           component: "app"
           name: "dashboard"
-          build-source: "./"
+          build-source: .
+          # ¡NUEVOS PARÁMETROS!
+          build_type: image
+          strategy_type: dockerfile  # o "buildpacks" según tu caso
+          dockerfile: Dockerfile     # especifica la ruta si es necesario
