@@ -1,0 +1,25 @@
+name: Deploy App to Code Engine
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Deploy Application to Code Engine
+        uses: ibm/code-engine-github-action@v1
+        with:
+          api-key: "kP_HOguqAUUcXM7qKyLskxkOlTEcEmsa2L0p06op6KJc"
+          resource-group: "ModelosGM"
+          region: "us-south"
+          project: "GM-Dashboard"
+          component: "app"
+          name: "dashboard"
+          build-source: .
+         
