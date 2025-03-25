@@ -22,7 +22,4 @@ jobs:
           component: "app"
           name: "dashboard"
           build-source: .
-          # ¡NUEVOS PARÁMETROS!
-          build_type: image
-          strategy_type: Dockerfile  # o "buildpacks" según tu caso
-          dockerfile: Dockerfile     # especifica la ruta si es necesario
+         
