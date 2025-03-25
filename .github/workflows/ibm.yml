@@ -22,4 +22,5 @@ jobs:
           component: "app"
           name: "dashboard"
           build-source: "./dashboard"
+          strategy_type: "dockerfile"
          
