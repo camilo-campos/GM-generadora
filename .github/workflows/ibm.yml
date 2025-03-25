@@ -24,5 +24,5 @@ jobs:
           build-source: ./
           # ¡NUEVOS PARÁMETROS!
           build_type: image
-          strategy_type: dockerfile  # o "buildpacks" según tu caso
+          strategy_type: Dockerfile  # o "buildpacks" según tu caso
           dockerfile: Dockerfile     # especifica la ruta si es necesario
