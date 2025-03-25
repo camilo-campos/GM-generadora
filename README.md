@@ -1,75 +1,22 @@
-# Nuxt Minimal Starter
+# 🚀 Dashboard de Monitoreo de GM Holding SA
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## 📌 Descripción del Proyecto  
+Este proyecto es un **dashboard de monitoreo** para la empresa **GM Holding SA**, una generadora de energía en Rancagua. Su objetivo principal es proporcionar un **sistema de alertas y avisos** basado en los sensores de la planta, ayudando a los técnicos a anticipar fallas o detectarlas rápidamente.  
 
-## Setup
+El sistema muestra:  
+✅ **Gráficos** en tiempo real sobre los sensores de la planta.  
+✅ **Clasificación de bitácoras** de operarios, técnicos y administradores.  
+✅ **Alertas y notificaciones** sobre fallas detectadas en los sensores.  
 
-Make sure to install dependencies:
+---
 
-```bash
-# npm
-npm install
+## 🛠️ Tecnologías Usadas  
+- [Nuxt.js 3](https://nuxt.com/) - Framework de Vue para SSR y SSG.  
+- [Tailwind CSS](https://tailwindcss.com/) - Framework de CSS para estilos rápidos y responsivos.  
+- [Pinia](https://pinia.vuejs.org/) - Gestión de estado.  
+- [Chart.js](https://www.chartjs.org/) - Visualización de datos en gráficos.  
+- [Axios](https://axios-http.com/) - Consumo de API para obtener datos de los sensores.  
 
-# pnpm
-pnpm install
+---
 
-# yarn
-yarn install
 
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
