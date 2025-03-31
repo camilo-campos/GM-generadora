@@ -255,6 +255,22 @@
                 <div v-if="currentView.id === 'logs'" class="ml-3 sm:ml-4">
                   <p
                     class="text-xl sm:text-2xl font-medium"
+                    :class="isDarkMode ? 'text-[#111111]' : 'text-[#6C757D]'"
+                  >
+                    Cantidad de Bitarocas Total : 1000
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="currentView.id === 'logs'"
+              class="rounded-lg shadow p-4 sm:p-5"
+              :class="isDarkMode ? 'bg-white' : 'bg-white'"
+            >
+              <div class="flex items-center">
+                <div v-if="currentView.id === 'logs'" class="ml-3 sm:ml-4">
+                  <p
+                    class="text-xl sm:text-2xl font-medium"
                     :class="isDarkMode ? 'text-[#B1B1B1]' : 'text-[#6C757D]'"
                   >
                     hola
