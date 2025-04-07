@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@tanstack/vue-query": "^5.71.1",
     "apexcharts": "^4.5.0",
     "chart.js": "^4.4.8",
     "nuxt": "^3.16.1",

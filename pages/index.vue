@@ -1,9 +1,5 @@
 <template>
   <div :class="[isDarkMode ? 'dark' : 'light', 'h-screen']">
-    <!-- <div>
-      <Bar :data="chartData" :options="chartOptions" />
-    </div> -->
-    <div></div>
     <button
       @click="toggleTheme"
       class="fixed top-4 right-4 z-20 p-2 rounded-full transition-colors"
@@ -171,211 +167,14 @@
         </header>
 
         <!-- Dashboard Content -->
-        <main class="p-4 sm:p-6">
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6"
-          >
-            <!-- Stat Cards -->
-            <div
-              v-if="currentView.id === 'overview'"
-              v-for="(stat, index) in stats"
-              :key="index"
-              class="rounded-lg shadow p-4 sm:p-5"
-              :class="isDarkMode ? 'bg-white' : 'bg-white'"
-            >
-              <div class="flex items-center">
-                <div
-                  v-if="currentView.id === 'overview'"
-                  :class="isDarkMode ? stat.darkBgColor : stat.lightBgColor"
-                >
-                  <component :is="stat.icon" class="h-5 w-5 sm:h-6 sm:w-6" />
-                </div>
-                <div v-if="currentView.id === 'overview'" class="ml-3 sm:ml-4">
-                  <p
-                    class="text-xl sm:text-2xl font-medium"
-                    :class="isDarkMode ? 'text-[#B1B1B1]' : 'text-[#6C757D]'"
-                  >
-                    {{ stat.name }}
-                  </p>
-                  <p
-                    class="text-xl sm:text-2xl font-semibold"
-                    :class="isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
-                  >
-                    {{ stat.value }}
-                  </p>
-                </div>
-              </div>
-              <div v-if="currentView.id === 'logs'" class="flex items-center">
-                <div
-                  v-if="currentView.id === 'logs'"
-                  :class="isDarkMode ? stat.darkBgColor : stat.lightBgColor"
-                ></div>
-                <div v-if="currentView.id === 'logs'" class="ml-3 sm:ml-4">
-                  <p
-                    class="text-xl sm:text-2xl font-medium"
-                    :class="isDarkMode ? 'text-[#B1B1B1]' : 'text-[#6C757D]'"
-                  >
-                    hola
-                  </p>
-                  <p
-                    class="text-xl sm:text-2xl font-semibold"
-                    :class="isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
-                  ></p>
-                </div>
-              </div>
-              <div
-                v-if="currentView.id === 'overview'"
-                class="mt-2 flex items-center text-xs sm:text-sm"
-              >
-                <span
-                  :class="
-                    stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                  "
-                >
-                  {{ stat.trend === "up" ? "↑" : "↓" }} {{ stat.change }}
-                </span>
-                <span
-                  :class="isDarkMode ? 'text-[#B1B1B1]' : 'text-[#6C757D]'"
-                  class="ml-1"
-                  >vs período anterior</span
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6"
-          >
-            <!-- Stat Cards -->
-            <div
-              v-if="currentView.id === 'logs'"
-              class="rounded-lg shadow p-4 sm:p-5"
-              :class="isDarkMode ? 'bg-white' : 'bg-white'"
-            >
-              <div class="flex items-center">
-                <div v-if="currentView.id === 'logs'" class="ml-3 sm:ml-4">
-                  <p
-                    class="text-xl sm:text-2xl font-medium"
-                    :class="isDarkMode ? 'text-[#111111]' : 'text-[#6C757D]'"
-                  >
-                    Cantidad de Bitarocas Total : 1000
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div
-              v-if="currentView.id === 'logs'"
-              class="rounded-lg shadow p-4 sm:p-5"
-              :class="isDarkMode ? 'bg-white' : 'bg-white'"
-            >
-              <div class="flex items-center">
-                <div v-if="currentView.id === 'logs'" class="ml-3 sm:ml-4">
-                  <p
-                    class="text-xl sm:text-2xl font-medium"
-                    :class="isDarkMode ? 'text-[#B1B1B1]' : 'text-[#6C757D]'"
-                  >
-                    hola
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Main Chart Area -->
-          <div class="flex flex-col sm:flex-row gap-6 mb-6">
-            <!-- Primer gráfico -->
-            <div
-              class="w-full sm:w-1/2 rounded-lg shadow p-4 sm:p-6"
-              :class="isDarkMode ? 'bg-white' : 'bg-white'"
-            >
-              <h3
-                class="text-base sm:text-lg font-medium"
-                :class="isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
-              >
-                {{ currentView.chartTitle }}
-              </h3>
-              <div class="w-full h-full" v-if="currentView.id === 'overview'">
-                <canvas id="anomalyChart"></canvas>
-              </div>
-            </div>
-
-            <!-- Segundo gráfico -->
-            <div
-              class="w-full sm:w-1/2 rounded-lg shadow p-4 sm:p-6"
-              :class="isDarkMode ? 'bg-white' : 'bg-white'"
-            >
-              <h3
-                class="text-base sm:text-lg font-medium"
-                :class="isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
-                v-if="currentView.id === 'overview'"
-              >
-                Alertas
-              </h3>
-              <div
-                v-if="currentView.id === 'overview'"
-                class="h-60 sm:h-80 rounded-md flex flex-col border border-gray-300 p-4"
-                :class="
-                  isDarkMode
-                    ? 'bg-[#F5F5F5] text-[#333333]'
-                    : 'bg-[#F1F3F5] text-[#2E4053]'
-                "
-              >
-                <ul class="flex flex-col flex-grow overflow-auto space-y-2">
-                  <li
-                    v-for="(item, index) in [
-                      'Elemento 1',
-                      'Elemento 2',
-                      'Elemento 3',
-                      'Elemento 4',
-                    ]"
-                    :key="index"
-                    class="p-4 border rounded-md hover:bg-gray-200"
-                    :class="
-                      index === 1
-                        ? 'bg-white border-red-500 text-red-500'
-                        : 'border-gray-300'
-                    "
-                  >
-                    {{ item }}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Secondary Charts Grid -->
-          <div
-            v-if="currentView.id === 'overview'"
-            class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
-          >
-            <div
-              v-for="(chart, index) in secondaryCharts"
-              :key="index"
-              class="rounded-lg shadow p-4 sm:p-6"
-              :class="isDarkMode ? 'bg-white' : 'bg-white'"
-            >
-              <h3
-                class="text-base sm:text-lg font-medium mb-3 sm:mb-4"
-                :class="isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
-              >
-                {{ chart.title }}
-              </h3>
-
-              <!-- Secondary Chart Placeholder -->
-              <div
-                class="h-48 sm:h-60 rounded-md flex items-center justify-center"
-                :class="isDarkMode ? 'bg-[#F5F5F5]' : 'bg-[#F1F3F5]'"
-              >
-                <div class="text-center px-4">
-                  <component
-                    :is="chart.icon"
-                    class="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2"
-                    :class="isDarkMode ? 'text-[#B1B1B1]' : 'text-[#ADB5BD]'"
-                  />
-                  <img src="" alt="" />
-                </div>
-              </div>
-            </div>
-          </div>
+        <main class="p-4 sm:p-6" v-if="currentView.id === 'overview'">
+          <Overview :currentView="currentView" :isDarkMode="isDarkMode" />
+        </main>
+        <main class="p-4 sm:p-6" v-if="currentView.id === 'sensors'">
+          <Sensors :currentView="currentView" />
+        </main>
+        <main class="p-4 sm:p-6" v-if="currentView.id === 'logs'">
+          <Logs :currentView="currentView" :isDarkMode="isDarkMode" />
         </main>
       </div>
     </div>
@@ -391,101 +190,6 @@ const myChart = ref(null);
 import { Chart, registerables } from "chart.js";
 
 Chart.register(...registerables);
-
-const anomalyScores = ref([
-  0.5, 0.2, 0.8, 0.1, 0.9, 0.3, 0.4, 0.7, 0.8, 0.5, 0.2, 0.8, 0.1, 0.9, 0.3,
-  0.4, 0.7, 0.8,
-]);
-const labels = ref([
-  "21:02",
-  "21:03",
-  "21:04",
-  "21:05",
-  "21:06",
-  "21:07",
-  "21:08",
-  "21:09",
-  "21:10",
-  "21:11",
-  "21:12",
-  "21:13",
-  "21:14",
-  "21:15",
-  "21:16",
-  "21:17",
-  "21:18",
-  "21:19",
-]);
-
-// Datasets con colores dinámicos
-const datasets = ref([
-  {
-    label: "Medición del Sensor",
-    data: anomalyScores.value,
-    borderColor: "rgba(75, 192, 192, 1)",
-    backgroundColor: "rgba(75, 192, 192, 0.2)",
-    borderWidth: 2,
-    pointRadius: 6,
-    pointBackgroundColor: anomalyScores.value.map((val) =>
-      val >= 0.3 && val <= 0.7 ? "green" : "red"
-    ),
-    tension: 0.3,
-  },
-]);
-
-// Función para crear el gráfico
-const createChart = (chartData) => {
-  const canvas = document.getElementById("anomalyChart");
-  if (canvas) {
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      myChart.value = new Chart(ctx, {
-        type: "line",
-        data: chartData,
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: "top",
-              labels: {
-                generateLabels: (chart) => [
-                  { text: "Normal (0.3 - 0.7)", fillStyle: "green" },
-                  { text: "Anomalía (<0.3 o >0.7)", fillStyle: "red" },
-                ],
-              },
-            },
-            title: { display: true, text: "Detección de Anomalías" },
-          },
-        },
-      });
-    }
-  }
-};
-
-// Función para actualizar el gráfico con nuevos datos
-function updateChart(newLabel, newData) {
-  labels.value = [...labels.value, newLabel];
-  datasets.value = datasets.value.map((dataset) => ({
-    ...dataset,
-    data: [...dataset.data, ...newData],
-    pointBackgroundColor: [
-      ...dataset.pointBackgroundColor,
-      ...newData.map((val) => (val >= 0.3 && val <= 0.7 ? "green" : "red")),
-    ],
-  }));
-
-  // Destruir el gráfico existente y esperar un tick antes de recrearlo
-  if (myChart.value) {
-    myChart.value.destroy();
-    myChart.value = null;
-  }
-  setTimeout(() => {
-    createChart({
-      labels: labels.value,
-      datasets: datasets.value,
-    });
-  }, 50); // 50ms de retraso para evitar condiciones de carrera
-}
 
 // fin del codigo de grafico
 
@@ -529,34 +233,6 @@ const toggleTheme = () => {
 
 // Setup resize listener
 onMounted(() => {
-  createChart({
-    labels: labels.value,
-    datasets: datasets.value,
-  });
-
-  setTimeout(() => {
-    updateChart("21:20", [0.3]);
-  }, 5000);
-  setTimeout(() => {
-    updateChart("21:21", [0.6]);
-  }, 8000);
-  setTimeout(() => {
-    updateChart("21:22", [0.1]);
-  }, 11000);
-  setTimeout(() => {
-    updateChart("21:23", [0.7]);
-  }, 13000);
-  setTimeout(() => {
-    updateChart("21:24", [0.7]);
-  }, 16000);
-  setTimeout(() => {
-    updateChart("21:25", [0.9]);
-  }, 19000);
-
-  setTimeout(() => {
-    updateChart("21:26", [0.4]);
-  }, 21000);
-
   // Load theme preference
   const savedTheme = localStorage.getItem("darkMode");
   if (savedTheme !== null) {
@@ -580,7 +256,7 @@ const navItems = [
   { id: "overview", name: "Visión general", icon: "ChartBarIcon" },
   { id: "logs", name: "Clasificación de registros", icon: "ListBulletIcon" },
   { id: "sensors", name: "Gráficos de sensores", icon: "SignalIcon" },
-  { id: "performance", name: "Rendimiento", icon: "BoltIcon" },
+  { id: "performance", name: "Analisis de fallas", icon: "BoltIcon" },
   { id: "alerts", name: "Alertas", icon: "BellIcon" },
 ];
 
@@ -591,65 +267,18 @@ const activeView = ref("overview");
 const chartPeriod = ref("semana");
 
 // Stats data with both dark and light mode colors
-const stats = [
-  {
-    name: "Presión Actual",
-    value: "42",
-    change: "8%",
-    trend: "up",
-    icon: "SignalIcon",
-    darkBgColor: "p-2 sm:p-3 rounded-full bg-[#333333] text-white",
-    lightBgColor: "p-2 sm:p-3 rounded-full bg-[#E9ECEF] text-[#495057]",
-  },
-  {
-    name: "Temperatura",
-    value: "0.8%",
-    change: "3%",
-    trend: "down",
-    icon: "ExclamationTriangleIcon",
-    darkBgColor: "p-2 sm:p-3 rounded-full bg-[#B1B1B1] text-white",
-    lightBgColor: "p-2 sm:p-3 rounded-full bg-[#FFF9DB] text-[#E67700]",
-  },
-  {
-    name: "Nivel de Vibración",
-    value: "0.8%",
-    change: "3%",
-    trend: "down",
-    icon: "ExclamationTriangleIcon",
-    darkBgColor: "p-2 sm:p-3 rounded-full bg-[#B1B1B1] text-white",
-    lightBgColor: "p-2 sm:p-3 rounded-full bg-[#FFF9DB] text-[#E67700]",
-  },
-];
 
 // Secondary charts
-const secondaryCharts = [
-  {
-    title: "Bomba 1",
-    description: "Distribution of logs by source",
-    icon: "ChartPieIcon",
-  },
-  {
-    title: "Bomba 2",
-    description: "Current status of all sensors",
-    icon: "SignalIcon",
-  },
-];
 
 watch(activeView, (nuevoValor, valorPrevio) => {
   const nuevoView = navItems.find((item) => item.id === nuevoValor);
   const viewPrevio = navItems.find((item) => item.id === valorPrevio);
-  console.log("valores ");
+  console.log("valores :", nuevoView.value);
   if (nuevoView.id === "overview" && viewPrevio?.id !== "overview") {
     if (myChart.value) {
       myChart.value.destroy();
       myChart.value = null;
     }
-    setTimeout(() => {
-      createChart({
-        labels: labels.value,
-        datasets: datasets.value,
-      });
-    }, 50);
   }
 });
 
