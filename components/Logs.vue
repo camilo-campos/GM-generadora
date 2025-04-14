@@ -1,5 +1,9 @@
 <template>
-  <div class="grid grid-cols-1 lg:grid-cols-1 gap-4 sm:gap-6 mb-10">
+  <div v-if="isLoading" class="text-xl font-semibold p-4">
+      Cargando gráficos, por favor espere...
+    </div>
+  <template v-else>
+    <div class="grid grid-cols-1 lg:grid-cols-1 gap-4 sm:gap-6 mb-10">
     <!-- Bitacoras Totales Chart -->
     <div class="rounded-lg shadow p-4 sm:p-6 bg-white">
       <div class="flex items-center justify-between mb-3 sm:mb-4">
@@ -129,6 +133,8 @@
       </div>
     </div>
   </div>
+  </template>
+  
 </template>
 
 <script setup>

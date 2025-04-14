@@ -23,20 +23,20 @@ export const useBitacoras = () => {
   const { data: bitacoras, isLoading: bitacorasLoading } = useQuery({
     queryKey: ["bitacoras"],
     queryFn: fetchBitacoras,
+    refetchInterval: 60000, // 60 segundos
   });
 
   // Consulta de bitácoras de fallas
-  const { data: bitacorasFallas, isLoading: bitacorasFallasLoading } = useQuery(
-    {
-      queryKey: ["bitacorasFallas"],
-      queryFn: fetchBitacorasFallas,
-    }
-  );
+  const { data: bitacorasFallas, isLoading: bitacorasFallasLoading } = useQuery({
+    queryKey: ["bitacorasFallas"],
+    queryFn: fetchBitacorasFallas,
+    refetchInterval: 60000, // 60 segundos
+  });
 
   return {
     bitacoras,
     bitacorasFallas,
     isLoading: bitacorasLoading || bitacorasFallasLoading,
-    // Función para llamar al POST de análisis
   };
 };
+
