@@ -277,6 +277,8 @@ const {
   isLoading,
 } = useSensores();
 
+//console.log(corriente.value)
+
 const corrienteCanvas = ref(null);
 const salidaAguaCanvas = ref(null);
 const generacionGasCanvas = ref(null);
@@ -306,7 +308,7 @@ const crearGrafico = (canvas, data, label) => {
 
   const tiempos = data.value.map((d) => d.tiempo_sensor);
   const valores = data.value.map((d) => d.valor_sensor);
-  const colores = data.value.map((d) =>
+  const puntosColores = data.value.map((d) =>
     d.clasificacion === 1 ? "green" : "red"
   );
 
@@ -320,20 +322,32 @@ const crearGrafico = (canvas, data, label) => {
         {
           label,
           data: valores,
-          borderColor: colores,
-          backgroundColor: colores.map((c) => c + "80"),
+          borderColor: "rgba(75, 192, 192, 1)",           // Color fijo para la línea
+          backgroundColor: "rgba(75, 192, 192, 0.2)",      // Color de fondo fijo
+          borderWidth: 2,
+          pointRadius: 6,
+          pointBackgroundColor: puntosColores,             // Colores de puntos según clasificación
         },
       ],
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // Important for controlling height
+      maintainAspectRatio: false, // Permite controlar la altura
       plugins: {
-        legend: { display: false },
+        legend: {
+              position: "top",
+              labels: {
+                generateLabels: (chart) => [
+                  { text: "Normal (0.3 - 0.7)", fillStyle: "green" },
+                  { text: "Anomalía (<0.3 o >0.7)", fillStyle: "red" },
+                ],
+              },
+            },
       },
     },
   });
 };
+
 
 // Propiedad computada para verificar si todos los datos están cargados
 const allDataLoaded = computed(() => {
@@ -381,12 +395,28 @@ const actualizarGraficos = async () => {
   crearGrafico(voltajeBarraCanvas.value, voltajeBarra, "voltajeBarra");
 };
 
-// Una vez que los datos estén cargados, actualizamos los gráficos
-watch(allDataLoaded, (nuevoValor) => {
-  if (nuevoValor) {
+const sensoresLengths = computed(() => ({
+  corriente: corriente.value?.length || 0,
+  salidaAgua: salidaAgua.value?.length || 0,
+  presionAgua: presionAgua.value?.length || 0,
+  generacionGas: generacionGas.value?.length || 0,
+  temperaturaAbiente: temperaturaAbiente.value?.length || 0,
+  temperaturaDescansoBomba1A: temperaturaDescansoBomba1A.value?.length || 0,
+  temperaturaDescansoMotorBomba: temperaturaDescansoMotorBomba.value?.length || 0,
+  temperaturaInternaEmpuje: temperaturaInternaEmpuje.value?.length || 0,
+  vibracionAxial: vibracionAxial.value?.length || 0,
+  voltajeBarra: voltajeBarra.value?.length || 0,
+}));
+
+watch(
+  sensoresLengths,
+  (nuevosLargos, antiguosLargos) => {
+    // Si alguno de los largos ha cambiado, actualizamos todos los gráficos
     actualizarGraficos();
-  }
-});
+  },
+  { deep: true }
+);
+
 
 // Redimensionar gráficos cuando cambia el tamaño de la ventana
 const handleResize = () => {

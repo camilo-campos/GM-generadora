@@ -12,32 +12,32 @@ export const useSensores = () => {
   const { data: corriente, isLoading: corrienteLoading } = useQuery({
     queryKey: ["sensoresCorriente"],
     queryFn: () => fetchSensores("corriente"),
-    refetchInterval: 60000,
+    refetchInterval: 5000,
   });
 
   const { data: salidaAgua, isLoading: salidaAguaLoading } = useQuery({
     queryKey: ["sensoresSalidaAgua"],
     queryFn: () => fetchSensores("salida-agua"),
-    refetchInterval: 60000,
+    refetchInterval: 5000,
   });
 
   const { data: presionAgua, isLoading: presionAguaLoading } = useQuery({
     queryKey: ["sensoresPresionAgua"],
     queryFn: () => fetchSensores("presion-agua"),
-    refetchInterval: 60000,
+    refetchInterval:  5000,
   });
 
   const { data: generacionGas, isLoading: generacionGasLoading } = useQuery({
     queryKey: ["sensoresGeneracionGas"],
     queryFn: () => fetchSensores("generacion_gas"),
-    refetchInterval: 60000,
+    refetchInterval:  5000,
   });
 
   const { data: temperaturaAbiente, isLoading: temperaturaAbienteLoading } =
     useQuery({
       queryKey: ["sensoresTemperaturaAbiente"],
       queryFn: () => fetchSensores("temperatura_abiente"),
-      refetchInterval: 60000,
+      refetchInterval:  5000,
     });
 
   const {
@@ -46,7 +46,7 @@ export const useSensores = () => {
   } = useQuery({
     queryKey: ["sensoresTemperaturaInternaEmpuje"],
     queryFn: () => fetchSensores("Temperatura_interna_empuje"),
-    refetchInterval: 60000,
+    refetchInterval:  5000,
   });
 
   const {
@@ -55,7 +55,7 @@ export const useSensores = () => {
   } = useQuery({
     queryKey: ["sensoresTemperaturaDescansoMotorBomba"],
     queryFn: () => fetchSensores("temperatura_descanso_interna_motor_bomba"),
-    refetchInterval: 60000,
+    refetchInterval: 5000,
   });
 
   const {
@@ -64,19 +64,19 @@ export const useSensores = () => {
   } = useQuery({
     queryKey: ["sensoresTemperaturaDescansoBomba1A"],
     queryFn: () => fetchSensores("temperatura_descanso_bomba_1A"),
-    refetchInterval: 60000,
+    refetchInterval: 5000,
   });
 
   const { data: vibracionAxial, isLoading: vibracionAxialLoading } = useQuery({
     queryKey: ["sensoresVibracionAxial"],
     queryFn: () => fetchSensores("vibracion_axial"),
-    refetchInterval: 60000,
+    refetchInterval: 5000,
   });
 
   const { data: voltajeBarra, isLoading: voltajeBarraLoading } = useQuery({
     queryKey: ["sensoresVoltajeBarra"],
     queryFn: () => fetchSensores("voltaje_barra"),
-    refetchInterval: 60000,
+    refetchInterval: 5000,
   });
 
   return {

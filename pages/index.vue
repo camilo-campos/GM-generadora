@@ -255,9 +255,9 @@ onBeforeUnmount(() => {
 const navItems = [
   { id: "overview", name: "Visión general", icon: "ChartBarIcon" },
   { id: "logs", name: "Clasificación de registros", icon: "ListBulletIcon" },
-  { id: "sensors", name: "Gráficos de sensores", icon: "SignalIcon" },
-  { id: "performance", name: "Analisis de fallas", icon: "BoltIcon" },
-  { id: "alerts", name: "Alertas", icon: "BellIcon" },
+  { id: "sensors", name: "Analisis de fallas", icon: "SignalIcon" },
+  //{ id: "performance", name: "Analisis de fallas", icon: "BoltIcon" },
+  //{ id: "alerts", name: "Alertas", icon: "BellIcon" },
 ];
 
 // Active view state
