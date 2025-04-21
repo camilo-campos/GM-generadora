@@ -436,4 +436,18 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("resize", handleResize);
 });
+
+
+defineProps({
+  currentView: {
+    type: Object,
+    default: () => ({
+      chartTitle: "Analisis de fallas",
+    }),
+  },
+  isDarkMode: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>

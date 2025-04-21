@@ -451,4 +451,18 @@ onMounted(() => {
     updateCharts();
   }
 });
+
+
+defineProps({
+  currentView: {
+    type: Object,
+    default: () => ({
+      chartTitle: "Clasificación de registros",
+    }),
+  },
+  isDarkMode: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>

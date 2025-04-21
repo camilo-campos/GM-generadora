@@ -397,8 +397,7 @@ watch(totalPaginas, (newValue) => {
 // Esperar a que "bitacoras" se cargue y luego mostrar su valor en la consola
 watch(bitacoras, (newVal) => {
   if (newVal && Array.isArray(newVal)) {
-    console.log("Todas las bitácoras:", newVal);
-    console.log("Bitácoras con alerta:", bitacorasConAlerta.value);
+    
   }
 });
 

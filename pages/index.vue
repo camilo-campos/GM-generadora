@@ -273,7 +273,7 @@ const chartPeriod = ref("semana");
 watch(activeView, (nuevoValor, valorPrevio) => {
   const nuevoView = navItems.find((item) => item.id === nuevoValor);
   const viewPrevio = navItems.find((item) => item.id === valorPrevio);
-  console.log("valores :", nuevoView.value);
+  
   if (nuevoView.id === "overview" && viewPrevio?.id !== "overview") {
     if (myChart.value) {
       myChart.value.destroy();
