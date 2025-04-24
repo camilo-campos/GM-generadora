@@ -303,6 +303,21 @@ let charts = {
   voltajeBarra: null,
 };
 
+
+// RANGOS personalizados por gráfico
+const rangos = reactive({
+  corriente: { min: 0, max: 100 },
+  salidaAgua: { min: 0, max: 50 },
+  presionAgua: { min: 1, max: 10 },
+  generacionGas: { min: 0, max: 0 },
+  temperaturaAbiente: { min: 16.20, max: 23.10 },
+  temperaturaDescansoBomba1A: { min: 28.67, max: 36.15 },
+  temperaturaDescansoMotorBomba: { min: 22.10 , max: 28.13 },
+  temperaturaInternaEmpuje: { min: 32.07  , max: 39.20 },
+  vibracionAxial: { min: -0.44 , max: -0.36 },
+  voltajeBarra: { min: 5906.20, max: 7311.50 }
+})
+
 const crearGrafico = (canvas, data, label) => {
   if (!canvas || !data?.value) return;
 
@@ -314,6 +329,9 @@ const crearGrafico = (canvas, data, label) => {
 
   if (charts[label]) charts[label].destroy();
 
+  // Tomamos los límites personalizados si existen
+  const rango = rangos[label] || { min: undefined, max: undefined };
+
   charts[label] = new Chart(canvas, {
     type: "line",
     data: {
@@ -322,31 +340,41 @@ const crearGrafico = (canvas, data, label) => {
         {
           label,
           data: valores,
-          borderColor: "rgba(75, 192, 192, 1)",           // Color fijo para la línea
-          backgroundColor: "rgba(75, 192, 192, 0.2)",      // Color de fondo fijo
+          borderColor: "rgba(75, 192, 192, 1)",
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
           borderWidth: 2,
           pointRadius: 6,
-          pointBackgroundColor: puntosColores,             // Colores de puntos según clasificación
+          pointBackgroundColor: puntosColores,
         },
       ],
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // Permite controlar la altura
+      maintainAspectRatio: false,
       plugins: {
         legend: {
-              position: "top",
-              labels: {
-                generateLabels: (chart) => [
-                  { text: "Normal (0.3 - 0.7)", fillStyle: "green" },
-                  { text: "Anomalía (<0.3 o >0.7)", fillStyle: "red" },
-                ],
-              },
-            },
+          position: "top",
+          labels: {
+            generateLabels: (chart) => [
+              { text: "Normal", fillStyle: "green" },
+              { text: "Anomalía", fillStyle: "red" },
+            ],
+          },
+        },
+      },
+      scales: {
+        y: {
+          min: rango.min,
+          max: rango.max,
+          ticks: {
+            stepSize: (rango.max - rango.min) / 5 || undefined, // Paso automático si no hay min/max
+          },
+        },
       },
     },
   });
 };
+
 
 
 // Propiedad computada para verificar si todos los datos están cargados
