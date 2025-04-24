@@ -306,16 +306,16 @@ let charts = {
 
 // RANGOS personalizados por gráfico
 const rangos = reactive({
-  corriente: { min: -10, max: 100 },
+  corriente: { min: -0.40, max: -0.38 },
   salidaAgua: { min: -10, max: 50 },
-  presionAgua: { min: -10, max: 10 },
+  presionAgua: { min: 1.97, max: 2.02 },
   generacionGas: { min: 0, max: 0 },
   temperaturaAbiente: { min: 16.20, max: 23.10 },
-  temperaturaDescansoBomba1A: { min: 28.67, max: 36.15 },
-  temperaturaDescansoMotorBomba: { min: 22.10 , max: 28.13 },
+  temperaturaDescansoBomba1A: { min: 31.22, max: 33.56 },
+  temperaturaDescansoMotorBomba: { min: 22.10 , max: 25.13 },
   temperaturaInternaEmpuje: { min: 32.07  , max: 39.20 },
-  vibracionAxial: { min: -0.44 , max: -0.36 },
-  voltajeBarra: { min: 5906.20, max: 7311.50 }
+  vibracionAxial: { min: -0.41 , max: -0.39 },
+  voltajeBarra: { min: 6431.91, max: 6779.75 }
 })
 
 const crearGrafico = (canvas, data, label) => {
