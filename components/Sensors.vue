@@ -306,9 +306,9 @@ let charts = {
 
 // RANGOS personalizados por gráfico
 const rangos = reactive({
-  corriente: { min: 0, max: 100 },
-  salidaAgua: { min: 0, max: 50 },
-  presionAgua: { min: 1, max: 10 },
+  corriente: { min: -10, max: 100 },
+  salidaAgua: { min: -10, max: 50 },
+  presionAgua: { min: -10, max: 10 },
   generacionGas: { min: 0, max: 0 },
   temperaturaAbiente: { min: 16.20, max: 23.10 },
   temperaturaDescansoBomba1A: { min: 28.67, max: 36.15 },
