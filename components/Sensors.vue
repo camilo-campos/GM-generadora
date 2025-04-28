@@ -247,21 +247,7 @@ const temperaturaInternaEmpuje_visible = ref(false);
 const vibracionAxial_visible = ref(false);
 const voltajeBarra_visible = ref(false);
 
-// Computed para contar gráficos activos
-const activeGraphsCount = computed(() => {
-  let count = 0;
-  if (corriente_visible.value) count++;
-  if (salidaAgua_visible.value) count++;
-  if (presionAgua_visible.value) count++;
-  if (generacionGas_visible.value) count++;
-  if (temperaturaAbiente_visible.value) count++;
-  if (temperaturaDescansoBomba1A_visible.value) count++;
-  if (temperaturaDescansoMotorBomba_visible.value) count++;
-  if (temperaturaInternaEmpuje_visible.value) count++;
-  if (vibracionAxial_visible.value) count++;
-  if (voltajeBarra_visible.value) count++;
-  return count;
-});
+
 
 const {
   corriente,
@@ -277,7 +263,7 @@ const {
   isLoading,
 } = useSensores();
 
-//console.log(corriente.value)
+
 
 const corrienteCanvas = ref(null);
 const salidaAguaCanvas = ref(null);

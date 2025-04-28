@@ -44,30 +44,198 @@
 
   <!-- Main Chart Area - Now using grid for equal sizing -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-    <!-- Primer gráfico -->
-    <div
-      class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col"
-      :class="isDarkMode ? 'bg-white' : 'bg-white'"
-    >
-      <h3
-        class="text-base sm:text-lg font-medium mb-4"
-        :class="isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
-      >
-        {{ currentView.chartTitle }}
-      </h3>
-      <div class="w-full flex-grow">
-        <canvas id="anomalyChart"></canvas>
-      </div>
-    </div>
-
-    <!-- Sección de Alertas con paginación -->
+    <!-- Sección de alertas de sensores con paginación -->
     <div class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col bg-white">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
         <h3 
           class="text-base sm:text-lg font-medium"
           :class="isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
         >
-          Alertas y Avisos
+          Alertas de Sensores
+        </h3>
+        
+        <!-- Filtros para alertas -->
+        <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+          <button 
+            @click="filtroActualAlertas = 'TODOS'; paginaActualAlertas = 1" 
+            :class="[
+              'px-2 py-1 rounded-full text-xs font-medium transition-colors',
+              filtroActualAlertas === 'TODOS' 
+                ? 'bg-gray-800 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            ]"
+          >
+            Todos ({{ alertas?.length || 0 }})
+          </button>
+          
+          <button 
+            @click="filtroActualAlertas = 'CRITICAL'; paginaActualAlertas = 1" 
+            :class="[
+              'px-2 py-1 rounded-full text-xs font-medium transition-colors',
+              filtroActualAlertas === 'CRITICAL' 
+                ? 'bg-purple-600 text-white' 
+                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+            ]"
+          >
+            Críticas ({{ conteoCritical }})
+          </button>
+          
+          <button 
+            @click="filtroActualAlertas = 'ALERT'; paginaActualAlertas = 1" 
+            :class="[
+              'px-2 py-1 rounded-full text-xs font-medium transition-colors',
+              filtroActualAlertas === 'ALERT' 
+                ? 'bg-blue-500 text-white' 
+                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+            ]"
+          >
+            Alertas ({{ conteoAlert }})
+          </button>
+          
+          <button 
+            @click="filtroActualAlertas = 'AVISO'; paginaActualAlertas = 1" 
+            :class="[
+              'px-2 py-1 rounded-full text-xs font-medium transition-colors',
+              filtroActualAlertas === 'AVISO' 
+                ? 'bg-teal-500 text-white' 
+                : 'bg-teal-100 text-teal-700 hover:bg-teal-200'
+            ]"
+          >
+            Avisos ({{ conteoAviso }})
+          </button>
+        </div>
+      </div>
+
+      <div v-if="isLoading_alerta" class="flex-grow flex items-center justify-center">
+        <div class="text-center">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-gray-600 mb-2"></div>
+          <p class="text-sm font-semibold text-gray-700">Cargando alertas...</p>
+        </div>
+      </div>
+
+      <div v-else class="flex-grow flex flex-col">
+        <!-- Mostrar un mensaje si no hay alertas disponibles -->
+        <div v-if="!alertas || alertas.length === 0" class="h-full flex items-center justify-center text-gray-500">
+          No hay alertas registradas.
+        </div>
+        
+        <!-- Mostrar un mensaje si hay alertas pero ninguna coincide con el filtro -->
+        <div v-else-if="alertasFiltradas.length === 0" class="h-full flex items-center justify-center text-gray-500">
+          No se encontraron resultados para el filtro seleccionado.
+        </div>
+        
+        <!-- Recorrer y mostrar las alertas filtradas y paginadas -->
+        <div v-else class="space-y-3 flex-grow overflow-auto">
+          <div
+            v-for="alerta in alertasPaginadas"
+            :key="alerta.id"
+            :class="[
+              'p-3 rounded-lg border-l-4 transition-all',
+              getAlertaClaseBackground(obtenerTipoAlerta(alerta))
+            ]"
+          >
+            <div class="flex items-start justify-between">
+              <div class="flex items-center">
+                <span 
+                  :class="[
+                    'inline-flex items-center justify-center w-6 h-6 rounded-full mr-2',
+                    getAlertaClaseIcono(obtenerTipoAlerta(alerta))
+                  ]"
+                >
+                  <svg v-if="obtenerTipoAlerta(alerta) === 'CRITICAL'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                  <svg v-else-if="obtenerTipoAlerta(alerta) === 'ALERT'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                  </svg>
+                </span>
+                <span 
+                  :class="[
+                    'font-medium text-xs px-2 py-0.5 rounded-full',
+                    getAlertaClaseBadge(obtenerTipoAlerta(alerta))
+                  ]"
+                >
+                  {{ obtenerTipoAlerta(alerta) }}
+                </span>
+              </div>
+              <span class="text-xs text-gray-500">
+                {{ formatearFecha(alerta.timestamp) }}
+              </span>
+            </div>
+            
+            <div class="mt-2 flex items-center">
+              <span class="text-xs font-medium bg-gray-100 text-gray-800 px-2 py-0.5 rounded-full mr-2">
+                {{ alerta.tipo_sensor.toUpperCase() }}
+              </span>
+              <span class="text-xs text-gray-500">
+                Sensor ID: {{ alerta.sensor_id }}
+              </span>
+            </div>
+            
+            <p class="mt-2 text-sm text-gray-700 line-clamp-2">
+              {{ alerta.descripcion }}
+            </p>
+          </div>
+        </div>
+        
+        <!-- Controles de paginación -->
+        <div v-if="alertasFiltradas.length > elementosPorPaginaAlertas" class="mt-4 flex items-center justify-between border-t pt-3">
+          <div class="flex items-center text-xs text-gray-500">
+            Mostrando {{ (paginaActualAlertas - 1) * elementosPorPaginaAlertas + 1 }} - 
+            {{ Math.min(paginaActualAlertas * elementosPorPaginaAlertas, alertasFiltradas.length) }} 
+            de {{ alertasFiltradas.length }}
+          </div>
+          
+          <div class="flex gap-1">
+            <button 
+              @click="paginaActualAlertas = Math.max(1, paginaActualAlertas - 1)"
+              :disabled="paginaActualAlertas === 1"
+              :class="[
+                'p-1 rounded transition-colors',
+                paginaActualAlertas === 1 
+                  ? 'text-gray-400 cursor-not-allowed' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              ]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+            
+            <div class="flex items-center px-2 text-sm">
+              {{ paginaActualAlertas }} / {{ totalPaginasAlertas }}
+            </div>
+            
+            <button 
+              @click="paginaActualAlertas = Math.min(totalPaginasAlertas, paginaActualAlertas + 1)"
+              :disabled="paginaActualAlertas === totalPaginasAlertas"
+              :class="[
+                'p-1 rounded transition-colors',
+                paginaActualAlertas === totalPaginasAlertas 
+                  ? 'text-gray-400 cursor-not-allowed' 
+                  : 'text-gray-700 hover:bg-gray-100'
+              ]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de bitacoras con paginación -->
+    <div class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col bg-white">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+        <h3 
+          class="text-base sm:text-lg font-medium"
+          :class="isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
+        >
+          Bitacoras de Alertas y Avisos
         </h3>
         
         <!-- Filtros -->
@@ -315,91 +483,142 @@
 import { ref, onMounted, computed } from "vue";
 import { Chart, registerables } from "chart.js";
 import { useBitacoras } from "@/composables/useBitacoras";
+import { useAlertas } from "@/composables/useAlertas";
 
-// Obtener las bitácoras mediante Tanstack Query
-const { bitacoras, isLoading } = useBitacoras();
+// ── BITÁCORAS ───────────────────────────────────────────────
+const { bitacoras, isLoading } = useBitacoras()
+const filtroActual = ref('TODOS')
+const paginaActual = ref(1)
+const elementosPorPagina = 4
+const isDarkMode = ref(false) // Ajusta según tu aplicación
 
-// Estado para el filtro actual
-const filtroActual = ref('TODOS'); // Valores posibles: 'TODOS', 'ALERTA', 'AVISO'
+const bitacorasConAlerta = computed(() =>
+  (bitacoras.value || []).filter(b => b.alerta_aviso != null)
+)
+const bitacorasFiltradas = computed(() =>
+  filtroActual.value === 'TODOS'
+    ? bitacorasConAlerta.value
+    : bitacorasConAlerta.value.filter(b => b.alerta_aviso === filtroActual.value)
+)
+const totalPaginas = computed(() =>
+  Math.ceil(bitacorasFiltradas.value.length / elementosPorPagina)
+)
+const bitacorasPaginadas = computed(() => {
+  const start = (paginaActual.value - 1) * elementosPorPagina
+  return bitacorasFiltradas.value.slice(start, start + elementosPorPagina)
+})
 
-// Variables para la paginación
-const paginaActual = ref(1);
-const elementosPorPagina = 4; // Límite de 4 logs por página
+const conteoAlertas = computed(() =>
+  bitacorasConAlerta.value.filter(b => b.alerta_aviso === 'ALERTA').length
+)
+const conteoAvisos = computed(() =>
+  bitacorasConAlerta.value.filter(b => b.alerta_aviso === 'AVISO').length
+)
 
-// Propiedad computada para filtrar las bitácoras que tengan un valor en alerta_aviso
-const bitacorasConAlerta = computed(() => {
-  const lista = bitacoras.value;
-  // Si la lista no existe o no es un arreglo, retorna arreglo vacío
-  if (!lista || !Array.isArray(lista)) return [];
-  return lista.filter(b => b.alerta_aviso != null);
-});
+watch(filtroActual, () => { paginaActual.value = 1 })
+watch(totalPaginas, n => {
+  if (paginaActual.value > n && n > 0) paginaActual.value = n
+})
+
+// ── ALERTAS ────────────────────────────────────────────────
+const { alertas, isLoading_alerta } = useAlertas()
+const filtroActualAlertas = ref('TODOS') // Valores posibles: 'TODOS', 'CRITICAL', 'ALERT', 'AVISO'
+const paginaActualAlertas = ref(1)
+const elementosPorPaginaAlertas = 4
+
+// Función para determinar el tipo de alerta basado en la descripción
+const obtenerTipoAlerta = (alerta) => {
+  const desc = alerta.descripcion || ''
+  if (desc.includes('CRÍTICA')) return 'CRITICAL'
+  if (desc.includes('ALERTA')) return 'ALERT'
+  return 'AVISO'
+}
+
+// Funciones para obtener clases de estilo según el tipo de alerta
+const getAlertaClaseBackground = (tipo) => {
+  switch (tipo) {
+    case 'CRITICAL': return 'bg-purple-50 border-purple-500'
+    case 'ALERT': return 'bg-blue-50 border-blue-500'
+    case 'AVISO': return 'bg-teal-50 border-teal-500'
+    default: return 'bg-gray-50 border-gray-500'
+  }
+}
+
+const getAlertaClaseIcono = (tipo) => {
+  switch (tipo) {
+    case 'CRITICAL': return 'bg-purple-100 text-purple-600'
+    case 'ALERT': return 'bg-blue-100 text-blue-600'
+    case 'AVISO': return 'bg-teal-100 text-teal-600'
+    default: return 'bg-gray-100 text-gray-600'
+  }
+}
+
+const getAlertaClaseBadge = (tipo) => {
+  switch (tipo) {
+    case 'CRITICAL': return 'bg-purple-100 text-purple-800'
+    case 'ALERT': return 'bg-blue-100 text-blue-800'
+    case 'AVISO': return 'bg-teal-100 text-teal-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
 
 // Propiedad computada para aplicar el filtro seleccionado
-const bitacorasFiltradas = computed(() => {
-  if (filtroActual.value === 'TODOS') {
-    return bitacorasConAlerta.value;
-  }
-  return bitacorasConAlerta.value.filter(b => b.alerta_aviso === filtroActual.value);
-});
-
-// Propiedad computada para obtener el total de páginas
-const totalPaginas = computed(() => {
-  return Math.ceil(bitacorasFiltradas.value.length / elementosPorPagina);
-});
-
-// Propiedad computada para obtener los elementos de la página actual
-const bitacorasPaginadas = computed(() => {
-  const inicio = (paginaActual.value - 1) * elementosPorPagina;
-  const fin = inicio + elementosPorPagina;
-  return bitacorasFiltradas.value.slice(inicio, fin);
-});
-
-// Conteo de alertas y avisos para mostrar en los botones de filtro
-const conteoAlertas = computed(() => {
-  return bitacorasConAlerta.value.filter(b => b.alerta_aviso === 'ALERTA').length;
-});
-
-const conteoAvisos = computed(() => {
-  return bitacorasConAlerta.value.filter(b => b.alerta_aviso === 'AVISO').length;
-});
-
-// Función para formatear la fecha de manera más amigable
-const formatearFecha = (fechaString) => {
-  if (!fechaString) return '';
+const alertasFiltradas = computed(() => {
+  if (!alertas.value || !Array.isArray(alertas.value)) return []
   
-  try {
-    const fecha = new Date(fechaString);
-    return new Intl.DateTimeFormat('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(fecha);
-  } catch (error) {
-    console.error('Error al formatear fecha:', error);
-    return fechaString;
+  if (filtroActualAlertas.value === 'TODOS') {
+    return alertas.value
   }
-};
+  
+  return alertas.value.filter(a => obtenerTipoAlerta(a) === filtroActualAlertas.value)
+})
+
+const totalPaginasAlertas = computed(() =>
+  Math.ceil(alertasFiltradas.value.length / elementosPorPaginaAlertas)
+)
+
+const alertasPaginadas = computed(() => {
+  const start = (paginaActualAlertas.value - 1) * elementosPorPaginaAlertas
+  return alertasFiltradas.value.slice(start, start + elementosPorPaginaAlertas)
+})
+
+// Conteo de alertas por tipo para mostrar en los botones de filtro
+const conteoCritical = computed(() => {
+  if (!alertas.value || !Array.isArray(alertas.value)) return 0
+  return alertas.value.filter(a => obtenerTipoAlerta(a) === 'CRITICAL').length
+})
+
+const conteoAlert = computed(() => {
+  if (!alertas.value || !Array.isArray(alertas.value)) return 0
+  return alertas.value.filter(a => obtenerTipoAlerta(a) === 'ALERT').length
+})
+
+const conteoAviso = computed(() => {
+  if (!alertas.value || !Array.isArray(alertas.value)) return 0
+  return alertas.value.filter(a => obtenerTipoAlerta(a) === 'AVISO').length
+})
 
 // Resetear la página cuando cambia el filtro
-watch(filtroActual, () => {
-  paginaActual.value = 1;
-});
+watch(filtroActualAlertas, () => { 
+  paginaActualAlertas.value = 1 
+})
 
 // Asegurarse de que la página actual es válida cuando cambia el total de páginas
-watch(totalPaginas, (newValue) => {
-  if (paginaActual.value > newValue && newValue > 0) {
-    paginaActual.value = newValue;
-  }
-});
+watch(totalPaginasAlertas, n => {
+  if (paginaActualAlertas.value > n && n > 0) paginaActualAlertas.value = n
+})
 
-// Esperar a que "bitacoras" se cargue y luego mostrar su valor en la consola
-watch(bitacoras, (newVal) => {
-  if (newVal && Array.isArray(newVal)) {
-    
+// ── UTILIDADES ────────────────────────────────────────────
+const formatearFecha = fechaStr => {
+  try {
+    return new Intl.DateTimeFormat('es-ES', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    }).format(new Date(fechaStr))
+  } catch {
+    return fechaStr
   }
-});
+}
 
 
 
