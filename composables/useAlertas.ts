@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/vue-query";
 // Función para obtener todas las bitácoras
 const fetchAlertas = async () => {
   const response = await fetch(
-    "http://127.0.0.1:8000/alertas_umbral/todas_alertas"
+    "https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/alertas_umbral/todas_alertas"
   );
   const data = await response.json();
   return data.data || data;
