@@ -269,6 +269,7 @@ import { ref, onMounted, watch, nextTick, computed, onUnmounted, reactive } from
 import { Chart, registerables } from "chart.js";
 import { useSensores } from "@/composables/useSensores";
 import AnalisisCorrienteDetallado from "./AnalisisCorrienteDetallado.vue";
+import AnalisisSalidaAgua from "./AnalisisSalidaAgua.vue";
 
 
 Chart.register(...registerables);
@@ -301,7 +302,7 @@ const toggleCorrienteView = async () => {
       // Obtener rango de fechas del sensor de corriente desde el backend
       // Nota: Temporalmente usamos los datos locales mientras se arregla el endpoint
       try {
-        const response = await fetch('http://127.0.0.1:8000/sensores/corriente/rango');
+        const response = await fetch('https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores/corriente/rango');
         
         if (!response.ok) {
           throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
