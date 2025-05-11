@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/vue-query";
 
-const API_BASE = "http://127.0.0.1:8000/sensores";
+const API_BASE = "https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores";
 
 type RangoFecha = {
   inicio: string;
