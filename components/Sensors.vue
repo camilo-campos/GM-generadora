@@ -157,12 +157,48 @@
   <div v-show="!isLoading" class="flex flex-col gap-6 mb-6">
     <!-- Gráficos (sin cambios) -->
     <div v-show="corriente_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Corriente</h2>
-      <div class="w-full h-[300px]">
-        <canvas ref="corrienteCanvas"></canvas>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Corriente</h2>
+        <button 
+          @click="toggleCorrienteView"
+          class="flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+          :class="corrienteViewMode === 'basic' 
+            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+        >
+          <svg v-if="corrienteViewMode === 'basic'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+          </svg>
+          {{ corrienteViewMode === 'basic' ? 'Ver análisis detallado' : 'Volver al gráfico básico' }}
+        </button>
+      </div>
+      
+      <!-- Contenedor principal que siempre está presente -->
+      <div class="w-full h-[300px] relative">
+        <!-- Gráfico básico - canvas siempre presente, solo cambia su visibilidad -->
+        <div class="w-full h-full" :style="{display: corrienteViewMode === 'basic' ? 'block' : 'none'}">
+          <canvas ref="corrienteCanvas"></canvas>
+        </div>
+        
+        <!-- Animación de carga mientras se obtienen los rangos de fechas -->
+        <div v-if="corrienteViewMode === 'loading'" class="absolute inset-0 flex items-center justify-center bg-white">
+          <div class="flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mb-3"></div>
+            <p class="text-gray-700 font-medium">Obteniendo datos del sensor...</p>
+            <p class="text-sm text-gray-500 mt-1">Consultando rangos de fechas disponibles</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tarjeta de análisis detallado - se muestra fuera del contenedor del gráfico básico -->
+      <div v-if="corrienteViewMode === 'detailed'">
+        <AnalisisCorrienteDetallado :datos="corriente" :rangoFechas="rangoFechasCorriente" />
       </div>
     </div>
-
+    
     <div v-show="salidaAgua_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
       <h2 class="text-lg font-semibold text-center mb-2">Salida de Agua</h2>
       <div class="w-full h-[300px]">
@@ -229,11 +265,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, nextTick, computed, onUnmounted } from "vue";
+import { ref, onMounted, watch, nextTick, computed, onUnmounted, reactive } from "vue";
 import { Chart, registerables } from "chart.js";
 import { useSensores } from "@/composables/useSensores";
+import AnalisisCorrienteDetallado from "./AnalisisCorrienteDetallado.vue";
+
 
 Chart.register(...registerables);
+
+
 
 // Visibilidad por gráfico
 const corriente_visible = ref(true);
@@ -246,6 +286,69 @@ const temperaturaDescansoMotorBomba_visible = ref(false);
 const temperaturaInternaEmpuje_visible = ref(false);
 const vibracionAxial_visible = ref(false);
 const voltajeBarra_visible = ref(false);
+
+// Control de modo de visualización para corriente (básico o detallado)
+const corrienteViewMode = ref('basic'); // Valores posibles: 'basic', 'loading' o 'detailed'
+const rangoFechasCorriente = ref(null); // Almacena el rango de fechas obtenido del backend
+
+// Función para alternar entre vista básica y detallada de corriente
+const toggleCorrienteView = async () => {
+  // Si estamos en modo básico, mostrar animación de carga y obtener datos
+  if (corrienteViewMode.value === 'basic') {
+    corrienteViewMode.value = 'loading';
+    
+    try {
+      // Obtener rango de fechas del sensor de corriente desde el backend
+      // Nota: Temporalmente usamos los datos locales mientras se arregla el endpoint
+      try {
+        const response = await fetch('http://127.0.0.1:8000/sensores/corriente/rango');
+        
+        if (!response.ok) {
+          throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Rango de fechas obtenido:', data);
+        
+        // Verificar si la respuesta tiene las propiedades esperadas
+        if (!data || (!data.inicio && !data.termino)) {
+          console.warn('El backend devolvió un objeto sin las propiedades esperadas');
+          // Usar datos de ejemplo mientras se arregla el endpoint
+          rangoFechasCorriente.value = {
+            inicio: '2023-01-01',
+            termino: '2023-12-31'
+          };
+        } else {
+          // Almacenar el rango de fechas del backend
+          rangoFechasCorriente.value = data;
+        }
+      } catch (error) {
+        console.error('Error al obtener rango de fechas del backend:', error);
+        // Usar datos de ejemplo en caso de error
+        rangoFechasCorriente.value = {
+          inicio: '2023-01-01',
+          termino: '2023-12-31'
+        };
+      }
+      
+      // Cambiar a modo detallado
+      corrienteViewMode.value = 'detailed';
+    } catch (error) {
+      console.error('Error al obtener rango de fechas:', error);
+      alert(`Error al obtener rango de fechas: ${error.message}`);
+      // Volver al modo básico en caso de error
+      corrienteViewMode.value = 'basic';
+    }
+  } else {
+    // Si estamos en modo detallado, volver al básico
+    corrienteViewMode.value = 'basic';
+    
+    // Asegurarnos de que el gráfico se actualice
+    nextTick(() => {
+      crearGrafico(corrienteCanvas.value, corriente, "corriente");
+    });
+  }
+};
 
 
 
