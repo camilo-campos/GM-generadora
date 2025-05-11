@@ -114,16 +114,7 @@
       <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
           <h3 class="font-medium text-gray-700">Gráfico de Corriente</h3>
-          <div class="flex space-x-2">
-            <div class="flex items-center">
-              <span class="h-3 w-3 rounded-full bg-green-500 mr-1"></span>
-              <span class="text-xs text-gray-600">Normal</span>
-            </div>
-            <div class="flex items-center">
-              <span class="h-3 w-3 rounded-full bg-red-500 mr-1"></span>
-              <span class="text-xs text-gray-600">Anomalía</span>
-            </div>
-          </div>
+          
         </div>
         
         <!-- Contenedor con posicionamiento relativo para poder colocar mensajes sobre el canvas -->
@@ -374,7 +365,7 @@ async function obtenerDatos() {
   try {
     // En lugar de filtrar datos existentes, consultamos directamente al servidor para esas fechas
     // exactamente como en test.vue
-    const url = `http://127.0.0.1:8000/sensores/corriente?inicio=${fechaInicioCorriente.value}&termino=${fechaTerminoCorriente.value}`;
+    const url = `https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores/corriente?inicio=${fechaInicioCorriente.value}&termino=${fechaTerminoCorriente.value}`;
     console.log('Consultando URL:', url);
     
     const response = await fetch(url);
