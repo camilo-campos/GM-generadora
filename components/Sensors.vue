@@ -176,10 +176,10 @@
         </button>
       </div>
       
-      <!-- Contenedor principal que siempre está presente -->
-      <div class="w-full h-[300px] relative">
-        <!-- Gráfico básico - canvas siempre presente, solo cambia su visibilidad -->
-        <div class="w-full h-full" :style="{display: corrienteViewMode === 'basic' ? 'block' : 'none'}">
+      <!-- Contenedor principal solo visible en modo básico o loading -->
+      <div v-if="corrienteViewMode !== 'detailed'" class="w-full h-[300px] relative transition-all duration-300">
+        <!-- Gráfico básico -->
+        <div v-if="corrienteViewMode === 'basic'" class="w-full h-full">
           <canvas ref="corrienteCanvas"></canvas>
         </div>
         
@@ -193,8 +193,8 @@
         </div>
       </div>
       
-      <!-- Tarjeta de análisis detallado - se muestra fuera del contenedor del gráfico básico -->
-      <div v-if="corrienteViewMode === 'detailed'">
+      <!-- Tarjeta de análisis detallado -->
+      <div v-if="corrienteViewMode === 'detailed'" class="transition-all duration-300">
         <AnalisisCorrienteDetallado :datos="corriente" :rangoFechas="rangoFechasCorriente" />
       </div>
     </div>
