@@ -166,15 +166,11 @@
           <div v-if="isMobile" class="w-6"></div>
         </header>
 
-        <!-- Dashboard Content -->
-        <main class="p-4 sm:p-6" v-if="currentView.id === 'overview'">
-          <Overview :currentView="currentView" :isDarkMode="isDarkMode" />
-        </main>
-        <main class="p-4 sm:p-6" v-if="currentView.id === 'sensors'">
-          <Sensors :currentView="currentView" />
-        </main>
-        <main class="p-4 sm:p-6" v-if="currentView.id === 'logs'">
-          <Logs :currentView="currentView" :isDarkMode="isDarkMode" />
+        <!-- Dashboard Content with KeepAlive -->
+        <main class="p-4 sm:p-6">
+          <KeepAlive>
+            <component :is="currentComponent" :currentView="currentView" :isDarkMode="isDarkMode" />
+          </KeepAlive>
         </main>
       </div>
     </div>
@@ -182,37 +178,56 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent, watch } from "vue";
+import { useTheme } from "../composables/useTheme";
+import { useResponsive } from "../composables/useResponsive";
 
-//codigo del grafico
+// Optimized Chart.js imports
+import { Chart } from "chart.js";
+import {
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from "chart.js";
 
+// Registrar solo los componentes necesarios de Chart.js
+Chart.register(
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
+
+// Referencia para el gráfico
 const myChart = ref(null);
-import { Chart, registerables } from "chart.js";
 
-Chart.register(...registerables);
+// Usar composables para el tema y la responsividad
+const { isDarkMode, toggleTheme } = useTheme();
+const { isMobile, isSidebarOpen, toggleSidebar } = useResponsive();
 
-// fin del codigo de grafico
+// Lazy loading de componentes
+const Overview = defineAsyncComponent(() => import('../components/Overview.vue'));
+const Sensors = defineAsyncComponent(() => import('../components/Sensors.vue'));
+const Logs = defineAsyncComponent(() => import('../components/Logs.vue'));
 
-// Theme state
-const isDarkMode = ref(true);
-
-// Mobile state
-const isMobile = ref(false);
-const isSidebarOpen = ref(false);
-
-// Check if mobile on mount and when window resizes
-const checkIfMobile = () => {
-  isMobile.value = window.innerWidth < 768;
-  // Close sidebar automatically on mobile when switching to mobile view
-  if (isMobile.value && isSidebarOpen.value) {
-    isSidebarOpen.value = false;
+// Determinar qué componente mostrar basado en la vista activa
+const currentComponent = computed(() => {
+  switch (activeView.value) {
+    case 'overview': return Overview;
+    case 'sensors': return Sensors;
+    case 'logs': return Logs;
+    default: return Overview;
   }
-};
-
-// Toggle sidebar
-const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value;
-};
+});
 
 // Handle navigation item selection (close sidebar on mobile)
 const selectNavItem = (id) => {
@@ -222,36 +237,7 @@ const selectNavItem = (id) => {
   }
 };
 
-// Toggle theme function
-const toggleTheme = () => {
-  isDarkMode.value = !isDarkMode.value;
-  // Save theme preference to localStorage
-  localStorage.setItem("darkMode", isDarkMode.value ? "true" : "false");
-};
-
-// Función que se invoca al hacer click en el botón para actualizar el gráfico
-
-// Setup resize listener
-onMounted(() => {
-  // Load theme preference
-  const savedTheme = localStorage.getItem("darkMode");
-  if (savedTheme !== null) {
-    isDarkMode.value = savedTheme === "true";
-  }
-
-  // Check initial screen size
-  checkIfMobile();
-
-  // Add resize listener
-  window.addEventListener("resize", checkIfMobile);
-});
-
-// Clean up resize listener
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", checkIfMobile);
-});
-
-// Navigation items
+// Navigation items - definidos fuera de cualquier función
 const navItems = [
   { id: "overview", name: "Visión general", icon: "ChartBarIcon" },
   { id: "logs", name: "Clasificación de registros", icon: "ListBulletIcon" },
@@ -266,10 +252,31 @@ const activeView = ref("overview");
 // Chart period state
 const chartPeriod = ref("semana");
 
-// Stats data with both dark and light mode colors
+// Definir la configuración de vistas fuera del componente para mejorar rendimiento
+const viewConfigMap = {
+  'overview': {
+    chartTitle: "Visión general del sistema",
+    chartDescription: "Rendimiento global del sistema y métricas",
+  },
+  'logs': {
+    chartTitle: "Registrar actividad",
+    chartDescription: "Volumen de registros y distribución en el tiempo",
+  },
+  'sensors': {
+    chartTitle: "Lecturas de los sensores",
+    chartDescription: "Visualización de datos agregados de sensores",
+  },
+  'performance': {
+    chartTitle: "Métricas de rendimiento",
+    chartDescription: "Indicadores de rendimiento del sistema",
+  },
+  'alerts': {
+    chartTitle: "Historial de alertas",
+    chartDescription: "Alertas y notificaciones recientes",
+  }
+};
 
-// Secondary charts
-
+// Secondary charts - limpieza de gráficos al cambiar de vista
 watch(activeView, (nuevoValor, valorPrevio) => {
   const nuevoView = navItems.find((item) => item.id === nuevoValor);
   const viewPrevio = navItems.find((item) => item.id === valorPrevio);
@@ -282,44 +289,16 @@ watch(activeView, (nuevoValor, valorPrevio) => {
   }
 });
 
-// Computed properties
+// Computed properties - optimizado con memoización implícita
 const currentView = computed(() => {
+  // Buscar la configuración en el mapa pre-definido
   const view = navItems.find((item) => item.id === activeView.value);
-
-  // Add additional view-specific data
-  switch (view.id) {
-    case "overview":
-      return {
-        ...view,
-        chartTitle: "Visión general del sistema",
-        chartDescription: "Rendimiento global del sistema y métricas",
-      };
-    case "logs":
-      return {
-        ...view,
-        chartTitle: "Registrar actividad",
-        chartDescription: "Volumen de registros y distribución en el tiempo",
-      };
-    case "sensors":
-      return {
-        ...view,
-        chartTitle: "Lecturas de los sensores",
-        chartDescription: "Visualización de datos agregados de sensores",
-      };
-    case "performance":
-      return {
-        ...view,
-        chartTitle: "Métricas de rendimiento",
-        chartDescription: "Indicadores de rendimiento del sistema",
-      };
-    case "alerts":
-      return {
-        ...view,
-        chartTitle: "Historial de alertas",
-        chartDescription: "Alertas y notificaciones recientes",
-      };
-    default:
-      return view;
-  }
+  const viewConfig = viewConfigMap[view.id] || {};
+  
+  // Combinar la vista con su configuración
+  return {
+    ...view,
+    ...viewConfig
+  };
 });
 </script>
