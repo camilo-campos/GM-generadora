@@ -2,8 +2,7 @@
   <div
     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6"
   >
-    <!-- Stat Cards -->
-    <div
+  <div
       v-for="(stat, index) in stats"
       :key="index"
       class="rounded-lg shadow p-4 sm:p-5"
@@ -40,6 +39,7 @@
         >
       </div>
     </div>
+    
   </div>
 
   <!-- Main Chart Area - Now using grid for equal sizing -->
@@ -645,72 +645,64 @@ defineProps({
 const bomba1Canvas = ref(null);
 const bomba2Canvas = ref(null);
 
-// Datos para Bomba 1
+// Datos para Bomba 1 - Serie temporal de fallas
 const bomba1Data = ref({
-  labels: ["Operativo", "Inactivo", "Mantenimiento", "Fallo"],
+  labels: Array.from({ length: 24 }, (_, i) => {
+    const date = new Date();
+    date.setHours(i, 0, 0, 0);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }),
   datasets: [
     {
-      data: [65, 15, 12, 8],
-      backgroundColor: [
-        "rgba(52, 211, 153, 0.8)", // Verde para operativo
-        "rgba(209, 213, 219, 0.8)", // Gris para inactivo
-        "rgba(251, 191, 36, 0.8)", // Amarillo para mantenimiento
-        "rgba(239, 68, 68, 0.8)", // Rojo para fallo
-      ],
-      borderColor: [
-        "rgba(52, 211, 153, 1)",
-        "rgba(209, 213, 219, 1)",
-        "rgba(251, 191, 36, 1)",
-        "rgba(239, 68, 68, 1)",
-      ],
-      borderWidth: 1,
-      hoverOffset: 4,
+      label: 'Probabilidad de Falla (%)',
+      data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 100)),
+      borderColor: 'rgba(239, 68, 68, 1)',
+      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+      tension: 0.3,
+      fill: true,
+      borderWidth: 2,
+      pointRadius: 3,
+      pointHoverRadius: 5,
     },
   ],
 });
 
-// Datos para Bomba 2
+// Datos para Bomba 2 - Serie temporal de fallas
 const bomba2Data = ref({
-  labels: ["Óptimo", "Normal", "Bajo Rendimiento", "Crítico"],
+  labels: Array.from({ length: 24 }, (_, i) => {
+    const date = new Date();
+    date.setHours(i, 0, 0, 0);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }),
   datasets: [
     {
-      data: [30, 45, 20, 5],
-      backgroundColor: [
-        "rgba(52, 211, 153, 0.8)", // Verde para óptimo
-        "rgba(96, 165, 250, 0.8)", // Azul para normal
-        "rgba(251, 191, 36, 0.8)", // Amarillo para bajo rendimiento
-        "rgba(239, 68, 68, 0.8)", // Rojo para crítico
-      ],
-      borderColor: [
-        "rgba(52, 211, 153, 1)",
-        "rgba(96, 165, 250, 1)",
-        "rgba(251, 191, 36, 1)",
-        "rgba(239, 68, 68, 1)",
-      ],
-      borderWidth: 1,
-      hoverOffset: 4,
+      label: 'Probabilidad de Falla (%)',
+      data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 100)),
+      borderColor: 'rgba(239, 68, 68, 1)',
+      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+      tension: 0.3,
+      fill: true,
+      borderWidth: 2,
+      pointRadius: 3,
+      pointHoverRadius: 5,
     },
   ],
 });
 
-// Estadísticas adicionales para Bomba 1
+// Estadísticas para Bomba 1
 const bomba1Stats = ref([
-  {
-    label: "Tiempo de Operación",
-    value: "1,245 horas",
-    bgColor: "bg-green-50",
-  },
-  { label: "Eficiencia", value: "87%", bgColor: "bg-blue-50" },
-  { label: "Ciclos Completados", value: "3,421", bgColor: "bg-purple-50" },
-  { label: "Último Mantenimiento", value: "12 días", bgColor: "bg-gray-50" },
+  { label: "Tasa de Fallas Promedio", value: "23%", bgColor: "bg-yellow-50" },
+  { label: "Pico de Fallas", value: "89%", bgColor: "bg-red-50" },
+  { label: "Tiempo sin Fallas", value: "87%", bgColor: "bg-green-50" },
+  { label: "Estabilidad", value: "Media", bgColor: "bg-yellow-100" },
 ]);
 
-// Estadísticas adicionales para Bomba 2
+// Estadísticas para Bomba 2
 const bomba2Stats = ref([
-  { label: "Flujo Promedio", value: "42 L/min", bgColor: "bg-blue-50" },
-  { label: "Presión Máxima", value: "85 PSI", bgColor: "bg-green-50" },
-  { label: "Temperatura", value: "38°C", bgColor: "bg-yellow-50" },
-  { label: "Vibración", value: "0.8 mm/s", bgColor: "bg-red-50" },
+  { label: "Tasa de Fallas Promedio", value: "42%", bgColor: "bg-red-50" },
+  { label: "Pico de Fallas", value: "95%", bgColor: "bg-red-50" },
+  { label: "Tiempo sin Fallas", value: "58%", bgColor: "bg-yellow-50" },
+  { label: "Estabilidad", value: "Baja", bgColor: "bg-red-100" },
 ]);
 
 // Ejemplo de datos para las tarjetas
@@ -766,15 +758,14 @@ onMounted(() => {
   if (bomba1Canvas.value) {
     const ctx1 = bomba1Canvas.value.getContext("2d");
     new Chart(ctx1, {
-      type: "doughnut",
+      type: "line",
       data: bomba1Data.value,
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: "65%",
         plugins: {
           legend: {
-            position: "bottom",
+            position: 'top',
             labels: {
               boxWidth: 12,
               padding: 15,
@@ -785,19 +776,49 @@ onMounted(() => {
           },
           tooltip: {
             callbacks: {
-              label: function (context) {
-                const label = context.label || "";
-                const value = context.formattedValue || "";
-                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                const percentage = Math.round((context.raw / total) * 100);
-                return `${label}: ${value} (${percentage}%)`;
-              },
+              label: function(context) {
+                return `${context.dataset.label}: ${context.raw}%`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Hora del día',
+              font: {
+                weight: 'bold'
+              }
             },
+            grid: {
+              display: false
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 45
+            }
           },
+          y: {
+            min: 0,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Rendimiento (%)',
+              font: {
+                weight: 'bold'
+              }
+            },
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
         },
         animation: {
-          animateScale: true,
-          animateRotate: true,
+          duration: 1000,
+          easing: 'easeInOutQuart'
         },
       },
     });
@@ -807,14 +828,14 @@ onMounted(() => {
   if (bomba2Canvas.value) {
     const ctx2 = bomba2Canvas.value.getContext("2d");
     new Chart(ctx2, {
-      type: "pie",
+      type: "line",
       data: bomba2Data.value,
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: "bottom",
+            position: 'top',
             labels: {
               boxWidth: 12,
               padding: 15,
@@ -825,19 +846,49 @@ onMounted(() => {
           },
           tooltip: {
             callbacks: {
-              label: function (context) {
-                const label = context.label || "";
-                const value = context.formattedValue || "";
-                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                const percentage = Math.round((context.raw / total) * 100);
-                return `${label}: ${value} (${percentage}%)`;
-              },
+              label: function(context) {
+                return `${context.dataset.label}: ${context.raw}%`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Hora del día',
+              font: {
+                weight: 'bold'
+              }
             },
+            grid: {
+              display: false
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 45
+            }
           },
+          y: {
+            min: 0,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Rendimiento (%)',
+              font: {
+                weight: 'bold'
+              }
+            },
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
         },
         animation: {
-          animateScale: true,
-          animateRotate: true,
+          duration: 1000,
+          easing: 'easeInOutQuart'
         },
       },
     });
