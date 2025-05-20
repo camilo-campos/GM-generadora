@@ -382,7 +382,7 @@
   </div>
 
   <!-- Secondary Charts Grid - Bombas -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+  <div class="grid grid-cols-1 gap-4 sm:gap-6">
     <!-- Bomba 1 Chart -->
     <div 
   v-if="!dataStatus.bomba1Ready" 
@@ -427,11 +427,11 @@
     </div>
   </div>
 
-  <div class="flex flex-col md:flex-row items-center">
-    <div class="w-full md:w-3/5 h-48 sm:h-60">
+  <div class="flex flex-col lg:flex-row items-center">
+    <div class="w-full lg:w-3/4 h-48 sm:h-72">
       <canvas ref="bomba1Canvas"></canvas>
     </div>
-    <div class="w-full md:w-2/5 mt-4 md:mt-0 md:pl-4">
+    <div class="w-full lg:w-1/4 mt-4 lg:mt-0 lg:pl-4">
       <div class="space-y-3">
         <div
           v-for="(item, index) in bomba1Stats"
@@ -450,6 +450,30 @@
 
     <!-- Bomba 2 Chart -->
     <div
+      v-if="!dataStatus.bomba2Ready" 
+      class="rounded-lg shadow p-4 sm:p-6 min-h-[320px] flex items-center justify-center relative overflow-hidden"
+      :class="isDarkMode ? 'bg-gray-800' : 'bg-white'"
+    >
+      <!-- Efecto de pulso en el fondo -->
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-blue-50 to-transparent opacity-10 animate-pulse"></div>
+      
+      <div class="flex flex-col items-center z-10">
+        <!-- Spinner con Tailwind -->
+        <div class="h-14 w-14 rounded-full border-4 border-gray-200 border-t-blue-600 animate-spin mb-4"></div>
+        
+        <p class="font-medium" :class="isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo predicciones de la bomba B</p>
+        <p class="text-sm mt-1" :class="isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando datos de probabilidad de fallas</p>
+        
+        <!-- Barra de progreso animada -->
+        <div class="w-48 h-1.5 bg-gray-200 rounded-full mt-4 overflow-hidden">
+          <div class="h-full bg-blue-600 animate-pulse" style="width: 70%"></div>
+        </div>
+        
+        <p class="text-xs mt-2" :class="isDarkMode ? 'text-gray-500' : 'text-gray-400'">Este proceso puede tardar unos segundos...</p>
+      </div>
+    </div>
+    <div
+      v-else
       class="rounded-lg shadow p-4 sm:p-6"
       :class="isDarkMode ? 'bg-white' : 'bg-white'"
     >
@@ -468,11 +492,11 @@
         </div>
       </div>
 
-      <div class="flex flex-col md:flex-row items-center">
-        <div class="w-full md:w-3/5 h-48 sm:h-60">
+      <div class="flex flex-col lg:flex-row items-center">
+        <div class="w-full lg:w-3/4 h-48 sm:h-72">
           <canvas ref="bomba2Canvas"></canvas>
         </div>
-        <div class="w-full md:w-2/5 mt-4 md:mt-0 md:pl-4">
+        <div class="w-full lg:w-1/4 mt-4 lg:mt-0 lg:pl-4">
           <div class="space-y-3">
             <div
               v-for="(item, index) in bomba2Stats"
