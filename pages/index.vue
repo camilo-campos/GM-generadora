@@ -45,80 +45,15 @@
       ></div>
 
       <!-- Sidebar -->
-      <div
-        :class="[
-          'shadow-lg transition-all duration-300 z-40',
-          isDarkMode ? 'bg-[#2E4053]' : 'bg-white border-r border-[#E9ECEF]',
-          isMobile ? 'fixed h-full' : 'relative w-64',
-          isMobile && !isSidebarOpen ? '-translate-x-full' : 'translate-x-0',
-        ]"
-        :style="isMobile ? 'width: 240px' : ''"
-      >
-        <!-- Logo/Header -->
-        <div
-          class="px-6 py-4 border-b flex justify-between items-center"
-          :class="isDarkMode ? 'border-[#333333]' : 'border-[#E9ECEF]'"
-        >
-          <h1
-            class="text-xl font-semibold"
-            :class="isDarkMode ? 'text-white' : 'text-[#2E4053]'"
-          >
-            Dashboard GM
-          </h1>
-          <button
-            v-if="isMobile"
-            @click="toggleSidebar"
-            :class="isDarkMode ? 'text-white' : 'text-[#2E4053]'"
-            class="p-1"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="px-4 py-4">
-          <p
-            class="text-xs font-medium uppercase tracking-wider mb-2"
-            :class="isDarkMode ? 'text-[#B1B1B1]' : 'text-[#6C757D]'"
-          >
-            Visualizaciones
-          </p>
-
-          <div class="space-y-1">
-            <button
-              v-for="(item, index) in navItems"
-              :key="index"
-              @click="selectNavItem(item.id)"
-              :class="[
-                'w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors',
-                activeView === item.id
-                  ? isDarkMode
-                    ? 'bg-[#333333] text-white font-medium'
-                    : 'bg-[#E9ECEF] text-[#2E4053] font-medium'
-                  : isDarkMode
-                  ? 'text-[#B1B1B1] hover:bg-[#3A5065] hover:text-white'
-                  : 'text-[#495057] hover:bg-[#F1F3F5] hover:text-[#2E4053]',
-              ]"
-            >
-              <component :is="item.icon" class="h-5 w-5 mr-2" />
-              {{ item.name }}
-            </button>
-          </div>
-        </nav>
-      </div>
+      <Sidebar
+        :isDarkMode="isDarkMode"
+        :isMobile="isMobile"
+        :isSidebarOpen="isSidebarOpen"
+        :activeView="activeView"
+        :navItems="navItems"
+        @toggleSidebar="toggleSidebar"
+        @selectNavItem="selectNavItem"
+      />
 
       <!-- Main Content -->
       <div
@@ -179,6 +114,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent, watch } from "vue";
+import Sidebar from '../components/Sidebar.vue';
 import { useTheme } from "../composables/useTheme";
 import { useResponsive } from "../composables/useResponsive";
 
@@ -218,6 +154,8 @@ const { isMobile, isSidebarOpen, toggleSidebar } = useResponsive();
 const Overview = defineAsyncComponent(() => import('../components/Overview.vue'));
 const Sensors = defineAsyncComponent(() => import('../components/Sensors.vue'));
 const Logs = defineAsyncComponent(() => import('../components/Logs.vue'));
+const sensorsB = defineAsyncComponent(() => import('../components/SensorsB.vue'));
+const logsB = defineAsyncComponent(() => import('../components/LogsB.vue'));
 
 // Determinar qué componente mostrar basado en la vista activa
 const currentComponent = computed(() => {
@@ -225,6 +163,8 @@ const currentComponent = computed(() => {
     case 'overview': return Overview;
     case 'sensors': return Sensors;
     case 'logs': return Logs;
+    case 'sensorsB': return sensorsB;
+    case 'logsB': return logsB;
     default: return Overview;
   }
 });
@@ -239,11 +179,28 @@ const selectNavItem = (id) => {
 
 // Navigation items - definidos fuera de cualquier función
 const navItems = [
-  { id: "overview", name: "Visión general", icon: "ChartBarIcon" },
-  { id: "logs", name: "Clasificación de registros", icon: "ListBulletIcon" },
-  { id: "sensors", name: "Analisis de fallas", icon: "SignalIcon" },
-  //{ id: "performance", name: "Analisis de fallas", icon: "BoltIcon" },
-  //{ id: "alerts", name: "Alertas", icon: "BellIcon" },
+{
+    section: "general",
+    items: [
+      { id: "overview", name: "Visión general", icon: "ChartBarIcon" },
+      
+    ]
+  },
+  {
+    section: "Bomba A",
+    items: [
+      
+      { id: "logs", name: "Clasificación de registros A", icon: "ListBulletIcon" },
+      { id: "sensors", name: "Análisis de fallas A", icon: "SignalIcon" },
+    ]
+  },
+  {
+    section: "Bomba B",
+    items: [
+      { id: "logsB", name: "Clasificación de registros B", icon: "ListBulletIcon" },
+      { id: "sensorsB", name: "Análisis de fallas B", icon: "SignalIcon" },
+    ]
+  }
 ];
 
 // Active view state
@@ -278,10 +235,10 @@ const viewConfigMap = {
 
 // Secondary charts - limpieza de gráficos al cambiar de vista
 watch(activeView, (nuevoValor, valorPrevio) => {
-  const nuevoView = navItems.find((item) => item.id === nuevoValor);
-  const viewPrevio = navItems.find((item) => item.id === valorPrevio);
-  
-  if (nuevoView.id === "overview" && viewPrevio?.id !== "overview") {
+  const nuevoView = findNavItemById(nuevoValor);
+  const viewPrevio = findNavItemById(valorPrevio);
+
+  if (nuevoView && nuevoView.id === "overview" && viewPrevio?.id !== "overview") {
     if (myChart.value) {
       myChart.value.destroy();
       myChart.value = null;
@@ -290,12 +247,18 @@ watch(activeView, (nuevoValor, valorPrevio) => {
 });
 
 // Computed properties - optimizado con memoización implícita
+// Función para aplanar los items y buscar el activo
+function findNavItemById(id) {
+  for (const section of navItems) {
+    const found = section.items.find(item => item.id === id);
+    if (found) return found;
+  }
+  return null;
+}
+
 const currentView = computed(() => {
-  // Buscar la configuración en el mapa pre-definido
-  const view = navItems.find((item) => item.id === activeView.value);
-  const viewConfig = viewConfigMap[view.id] || {};
-  
-  // Combinar la vista con su configuración
+  const view = findNavItemById(activeView.value);
+  const viewConfig = viewConfigMap[view?.id] || {};
   return {
     ...view,
     ...viewConfig
