@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/vue-query";
-
+//http://127.0.0.1:8000
+//https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud
 const fetchSensores = async (tipo: string) => {
   const response = await fetch(
     `https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores/${tipo}`
@@ -9,6 +10,7 @@ const fetchSensores = async (tipo: string) => {
 };
 
 export const useSensores = () => {
+  // Sensores originales
   const { data: corriente, isLoading: corrienteLoading } = useQuery({
     queryKey: ["sensoresCorriente"],
     queryFn: () => fetchSensores("corriente"),
@@ -79,7 +81,69 @@ export const useSensores = () => {
     refetchInterval: 60000,
   });
 
+  // Nuevos sensores
+  const { data: excentricidadBomba, isLoading: excentricidadBombaLoading } = useQuery({
+    queryKey: ["sensoresExcentricidadBomba"],
+    queryFn: () => fetchSensores("excentricidad-bomba"),
+    refetchInterval: 60000,
+  });
+
+  const { data: flujoAguaDomoAP, isLoading: flujoAguaDomoAPLoading } = useQuery({
+    queryKey: ["sensoresFlujoAguaDomoAP"],
+    queryFn: () => fetchSensores("flujo-agua-domo-ap"),
+    refetchInterval: 60000,
+  });
+
+  const { data: flujoAguaDomoMP, isLoading: flujoAguaDomoMPLoading } = useQuery({
+    queryKey: ["sensoresFlujoAguaDomoMP"],
+    queryFn: () => fetchSensores("flujo-agua-domo-mp"),
+    refetchInterval: 60000,
+  });
+
+  const { data: flujoAguaRecalentador, isLoading: flujoAguaRecalentadorLoading } = useQuery({
+    queryKey: ["sensoresFlujoAguaRecalentador"],
+    queryFn: () => fetchSensores("flujo-agua-recalentador"),
+    refetchInterval: 60000,
+  });
+
+  const { data: flujoAguaVaporAlta, isLoading: flujoAguaVaporAltaLoading } = useQuery({
+    queryKey: ["sensoresFlujoAguaVaporAlta"],
+    queryFn: () => fetchSensores("flujo-agua-vapor-alta"),
+    refetchInterval: 60000,
+  });
+
+  const { data: posicionValvulaRecirc, isLoading: posicionValvulaRecircLoading } = useQuery({
+    queryKey: ["sensoresPosicionValvulaRecirc"],
+    queryFn: () => fetchSensores("posicion-valvula-recirc"),
+    refetchInterval: 60000,
+  });
+
+  const { data: presionAguaMP, isLoading: presionAguaMPLoading } = useQuery({
+    queryKey: ["sensoresPresionAguaMP"],
+    queryFn: () => fetchSensores("presion-agua-mp"),
+    refetchInterval: 60000,
+  });
+
+  const { data: presionSuccionBAA, isLoading: presionSuccionBAALoading } = useQuery({
+    queryKey: ["sensoresPresionSuccionBAA"],
+    queryFn: () => fetchSensores("presion-succion-baa"),
+    refetchInterval: 60000,
+  });
+
+  const { data: temperaturaEstator, isLoading: temperaturaEstatorLoading } = useQuery({
+    queryKey: ["sensoresTemperaturaEstator"],
+    queryFn: () => fetchSensores("temperatura-estator"),
+    refetchInterval: 60000,
+  });
+
+  const { data: flujoSalida12FPMFC, isLoading: flujoSalida12FPMFCLoading } = useQuery({
+    queryKey: ["sensoresFlujoSalida12FPMFC"],
+    queryFn: () => fetchSensores("flujo-salida-12fpmfc"),
+    refetchInterval: 60000,
+  });
+
   return {
+    // Sensores originales
     corriente,
     salidaAgua,
     presionAgua,
@@ -90,6 +154,19 @@ export const useSensores = () => {
     temperaturaDescansoBomba1A,
     vibracionAxial,
     voltajeBarra,
+    
+    // Nuevos sensores
+    excentricidadBomba,
+    flujoAguaDomoAP,
+    flujoAguaDomoMP,
+    flujoAguaRecalentador,
+    flujoAguaVaporAlta,
+    posicionValvulaRecirc,
+    presionAguaMP,
+    presionSuccionBAA,
+    temperaturaEstator,
+    flujoSalida12FPMFC,
+    
     isLoading:
       corrienteLoading ||
       salidaAguaLoading ||
@@ -100,7 +177,18 @@ export const useSensores = () => {
       temperaturaDescansoMotorBombaLoading ||
       temperaturaDescansoBomba1ALoading ||
       vibracionAxialLoading ||
-      voltajeBarraLoading,
+      voltajeBarraLoading ||
+      // Nuevos sensores loading states
+      excentricidadBombaLoading ||
+      flujoAguaDomoAPLoading ||
+      flujoAguaDomoMPLoading ||
+      flujoAguaRecalentadorLoading ||
+      flujoAguaVaporAltaLoading ||
+      posicionValvulaRecircLoading ||
+      presionAguaMPLoading ||
+      presionSuccionBAALoading ||
+      temperaturaEstatorLoading ||
+      flujoSalida12FPMFCLoading,
   };
 };
 

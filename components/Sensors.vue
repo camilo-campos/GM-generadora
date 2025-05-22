@@ -1,6 +1,6 @@
 <template>
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-6 bg-gray-100">
-    <!-- Botones de visibilidad con indicador de estado activo -->
+    <!-- Botones de visibilidad con indicador de estado activo - Sensores originales -->
     <button 
       @click="corriente_visible = !corriente_visible" 
       :class="[
@@ -130,12 +130,144 @@
       <span>Voltaje Barra</span>
       <span v-if="voltajeBarra_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
     </button>
+    
+    <!-- Botones para los nuevos sensores -->
+    <button 
+      @click="excentricidadBomba_visible = !excentricidadBomba_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        excentricidadBomba_visible 
+          ? 'bg-cyan-600 text-white ring-2 ring-offset-2 ring-cyan-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-cyan-100'
+      ]"
+    >
+      <span>Excentricidad Bomba</span>
+      <span v-if="excentricidadBomba_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="flujoAguaDomoAP_visible = !flujoAguaDomoAP_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        flujoAguaDomoAP_visible 
+          ? 'bg-emerald-600 text-white ring-2 ring-offset-2 ring-emerald-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-emerald-100'
+      ]"
+    >
+      <span>Flujo Agua Domo AP</span>
+      <span v-if="flujoAguaDomoAP_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="flujoAguaDomoMP_visible = !flujoAguaDomoMP_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        flujoAguaDomoMP_visible 
+          ? 'bg-lime-600 text-white ring-2 ring-offset-2 ring-lime-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-lime-100'
+      ]"
+    >
+      <span>Flujo Agua Domo MP</span>
+      <span v-if="flujoAguaDomoMP_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="flujoAguaRecalentador_visible = !flujoAguaRecalentador_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        flujoAguaRecalentador_visible 
+          ? 'bg-amber-600 text-white ring-2 ring-offset-2 ring-amber-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-amber-100'
+      ]"
+    >
+      <span>Flujo Agua Recalentador</span>
+      <span v-if="flujoAguaRecalentador_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="flujoAguaVaporAlta_visible = !flujoAguaVaporAlta_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        flujoAguaVaporAlta_visible 
+          ? 'bg-fuchsia-600 text-white ring-2 ring-offset-2 ring-fuchsia-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-fuchsia-100'
+      ]"
+    >
+      <span>Flujo Agua Vapor Alta</span>
+      <span v-if="flujoAguaVaporAlta_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="posicionValvulaRecirc_visible = !posicionValvulaRecirc_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        posicionValvulaRecirc_visible 
+          ? 'bg-rose-600 text-white ring-2 ring-offset-2 ring-rose-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-rose-100'
+      ]"
+    >
+      <span>Posición Válvula Recirc</span>
+      <span v-if="posicionValvulaRecirc_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="presionAguaMP_visible = !presionAguaMP_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        presionAguaMP_visible 
+          ? 'bg-sky-600 text-white ring-2 ring-offset-2 ring-sky-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-sky-100'
+      ]"
+    >
+      <span>Presión Agua MP</span>
+      <span v-if="presionAguaMP_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="presionSuccionBAA_visible = !presionSuccionBAA_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        presionSuccionBAA_visible 
+          ? 'bg-violet-600 text-white ring-2 ring-offset-2 ring-violet-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-violet-100'
+      ]"
+    >
+      <span>Presión Succión BAA</span>
+      <span v-if="presionSuccionBAA_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="temperaturaEstator_visible = !temperaturaEstator_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        temperaturaEstator_visible 
+          ? 'bg-amber-500 text-white ring-2 ring-offset-2 ring-amber-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-amber-100'
+      ]"
+    >
+      <span>Temp. Estator</span>
+      <span v-if="temperaturaEstator_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
+    
+    <button 
+      @click="flujoSalida12FPMFC_visible = !flujoSalida12FPMFC_visible" 
+      :class="[
+        'font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out flex items-center justify-center gap-2',
+        flujoSalida12FPMFC_visible 
+          ? 'bg-lime-500 text-white ring-2 ring-offset-2 ring-lime-400' 
+          : 'bg-gray-200 text-gray-700 hover:bg-lime-100'
+      ]"
+    >
+      <span>Flujo Salida 12FPMFC</span>
+      <span v-if="flujoSalida12FPMFC_visible" class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+    </button>
   </div>
 
   <div class="p-4 bg-gray-100">
     <div class="flex flex-wrap gap-2 mb-4">
       <div class="text-sm font-medium">Gráficos activos:</div>
       <div class="flex flex-wrap gap-2">
+        <!-- Etiquetas sensores originales -->
         <span v-if="corriente_visible" class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Corriente</span>
         <span v-if="salidaAgua_visible" class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Salida de Agua</span>
         <span v-if="presionAgua_visible" class="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">Presión de Agua</span>
@@ -146,6 +278,18 @@
         <span v-if="temperaturaInternaEmpuje_visible" class="px-2 py-1 text-xs bg-teal-100 text-teal-800 rounded-full">Temp. Empuje</span>
         <span v-if="vibracionAxial_visible" class="px-2 py-1 text-xs bg-gray-300 text-gray-800 rounded-full">Vibración Axial</span>
         <span v-if="voltajeBarra_visible" class="px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded-full">Voltaje Barra</span>
+        
+        <!-- Etiquetas nuevos sensores -->
+        <span v-if="excentricidadBomba_visible" class="px-2 py-1 text-xs bg-cyan-100 text-cyan-800 rounded-full">Excentricidad Bomba</span>
+        <span v-if="flujoAguaDomoAP_visible" class="px-2 py-1 text-xs bg-emerald-100 text-emerald-800 rounded-full">Flujo Agua Domo AP</span>
+        <span v-if="flujoAguaDomoMP_visible" class="px-2 py-1 text-xs bg-lime-100 text-lime-800 rounded-full">Flujo Agua Domo MP</span>
+        <span v-if="flujoAguaRecalentador_visible" class="px-2 py-1 text-xs bg-amber-100 text-amber-800 rounded-full">Flujo Agua Recalentador</span>
+        <span v-if="flujoAguaVaporAlta_visible" class="px-2 py-1 text-xs bg-fuchsia-100 text-fuchsia-800 rounded-full">Flujo Agua Vapor Alta</span>
+        <span v-if="posicionValvulaRecirc_visible" class="px-2 py-1 text-xs bg-rose-100 text-rose-800 rounded-full">Posición Válvula Recirc</span>
+        <span v-if="presionAguaMP_visible" class="px-2 py-1 text-xs bg-sky-100 text-sky-800 rounded-full">Presión Agua MP</span>
+        <span v-if="presionSuccionBAA_visible" class="px-2 py-1 text-xs bg-violet-100 text-violet-800 rounded-full">Presión Succión BAA</span>
+        <span v-if="temperaturaEstator_visible" class="px-2 py-1 text-xs bg-amber-100 text-amber-800 rounded-full">Temp. Estator</span>
+        <span v-if="flujoSalida12FPMFC_visible" class="px-2 py-1 text-xs bg-lime-100 text-lime-800 rounded-full">Flujo Salida 12FPMFC</span>
       </div>
     </div>
   </div>
@@ -157,23 +301,27 @@
   <div v-show="!isLoading" class="flex flex-col gap-6 mb-6">
     <!-- Gráficos (sin cambios) -->
     <div v-show="corriente_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold">Corriente</h2>
-        <button 
-          @click="toggleCorrienteView"
-          class="flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
-          :class="corrienteViewMode === 'basic' 
-            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-        >
-          <svg v-if="corrienteViewMode === 'basic'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-          </svg>
-          {{ corrienteViewMode === 'basic' ? 'Ver análisis detallado' : 'Volver al gráfico básico' }}
-        </button>
+      <div class="mb-4">
+        <div class="flex justify-center mb-2">
+          <h2 class="text-lg font-semibold">Corriente</h2>
+        </div>
+        <div class="flex justify-end">
+          <button 
+            @click="toggleCorrienteView"
+            class="flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+            :class="corrienteViewMode === 'basic' 
+              ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+          >
+            <svg v-if="corrienteViewMode === 'basic'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+            </svg>
+            {{ corrienteViewMode === 'basic' ? 'Ver análisis detallado' : 'Volver al gráfico básico' }}
+          </button>
+        </div>
       </div>
       
       <!-- Contenedor principal solo visible en modo básico o loading -->
@@ -261,6 +409,77 @@
         <canvas ref="voltajeBarraCanvas"></canvas>
       </div>
     </div>
+
+    <!-- Nuevos gráficos -->
+    <div v-show="excentricidadBomba_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Excentricidad Bomba</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="excentricidadBombaCanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="flujoAguaDomoAP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Flujo Agua Domo AP</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="flujoAguaDomoAPCanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="flujoAguaDomoMP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Flujo Agua Domo MP</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="flujoAguaDomoMPCanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="flujoAguaRecalentador_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Flujo Agua Recalentador</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="flujoAguaRecalentadorCanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="flujoAguaVaporAlta_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Flujo Agua Vapor Alta</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="flujoAguaVaporAltaCanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="posicionValvulaRecirc_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Posición Válvula Recirc</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="posicionValvulaRecircCanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="presionAguaMP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Presión Agua MP</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="presionAguaMPCanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="presionSuccionBAA_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Presión Succión BAA</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="presionSuccionBAACanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="temperaturaEstator_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Temperatura Estator</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="temperaturaEstatorCanvas"></canvas>
+      </div>
+    </div>
+
+    <div v-show="flujoSalida12FPMFC_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+      <h2 class="text-lg font-semibold text-center mb-2">Flujo Salida 12FPMFC</h2>
+      <div class="w-full h-[300px]">
+        <canvas ref="flujoSalida12FPMFCCanvas"></canvas>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -276,7 +495,7 @@ Chart.register(...registerables);
 
 
 
-// Visibilidad por gráfico
+// Visibilidad por gráfico - Sensores originales
 const corriente_visible = ref(true);
 const salidaAgua_visible = ref(false);
 const presionAgua_visible = ref(false);
@@ -287,6 +506,18 @@ const temperaturaDescansoMotorBomba_visible = ref(false);
 const temperaturaInternaEmpuje_visible = ref(false);
 const vibracionAxial_visible = ref(false);
 const voltajeBarra_visible = ref(false);
+
+// Visibilidad por gráfico - Nuevos sensores
+const excentricidadBomba_visible = ref(false);
+const flujoAguaDomoAP_visible = ref(false);
+const flujoAguaDomoMP_visible = ref(false);
+const flujoAguaRecalentador_visible = ref(false);
+const flujoAguaVaporAlta_visible = ref(false);
+const posicionValvulaRecirc_visible = ref(false);
+const presionAguaMP_visible = ref(false);
+const presionSuccionBAA_visible = ref(false);
+const temperaturaEstator_visible = ref(false);
+const flujoSalida12FPMFC_visible = ref(false);
 
 // Control de modo de visualización para corriente (básico o detallado)
 const corrienteViewMode = ref('basic'); // Valores posibles: 'basic', 'loading' o 'detailed'
@@ -359,16 +590,29 @@ const {
   presionAgua,
   generacionGas,
   temperaturaAbiente,
-  temperaturaDescansoBomba1A,
-  temperaturaDescansoMotorBomba,
   temperaturaInternaEmpuje,
+  temperaturaDescansoMotorBomba,
+  temperaturaDescansoBomba1A,
   vibracionAxial,
   voltajeBarra,
+  
+  excentricidadBomba,
+  flujoAguaDomoAP,
+  flujoAguaDomoMP,
+  flujoAguaRecalentador,
+  flujoAguaVaporAlta,
+  posicionValvulaRecirc,
+  presionAguaMP,
+  presionSuccionBAA,
+  temperaturaEstator,
+  flujoSalida12FPMFC,
+  
   isLoading,
 } = useSensores();
 
 
 
+// Referencias a los canvas - Sensores originales
 const corrienteCanvas = ref(null);
 const salidaAguaCanvas = ref(null);
 const generacionGasCanvas = ref(null);
@@ -380,7 +624,20 @@ const vibracionAxialCanvas = ref(null);
 const voltajeBarraCanvas = ref(null);
 const presionAguaCanvas = ref(null);
 
+// Referencias a los canvas - Nuevos sensores
+const excentricidadBombaCanvas = ref(null);
+const flujoAguaDomoAPCanvas = ref(null);
+const flujoAguaDomoMPCanvas = ref(null);
+const flujoAguaRecalentadorCanvas = ref(null);
+const flujoAguaVaporAltaCanvas = ref(null);
+const posicionValvulaRecircCanvas = ref(null);
+const presionAguaMPCanvas = ref(null);
+const presionSuccionBAACanvas = ref(null);
+const temperaturaEstatorCanvas = ref(null);
+const flujoSalida12FPMFCCanvas = ref(null);
+
 let charts = {
+  // Sensores originales
   corriente: null,
   salidaAgua: null,
   presionAgua: null,
@@ -391,11 +648,24 @@ let charts = {
   temperaturaInternaEmpuje: null,
   vibracionAxial: null,
   voltajeBarra: null,
+  
+  // Nuevos sensores
+  excentricidadBomba: null,
+  flujoAguaDomoAP: null,
+  flujoAguaDomoMP: null,
+  flujoAguaRecalentador: null,
+  flujoAguaVaporAlta: null,
+  posicionValvulaRecirc: null,
+  presionAguaMP: null,
+  presionSuccionBAA: null,
+  temperaturaEstator: null,
+  flujoSalida12FPMFC: null,
 };
 
 
 // RANGOS personalizados por gráfico
 const rangos = reactive({
+  // Sensores originales
   corriente: { min: -0.40, max: -0.38 },
   salidaAgua: { min: -10, max: 50 },
   presionAgua: { min: 1.97, max: 2.02 },
@@ -405,7 +675,19 @@ const rangos = reactive({
   temperaturaDescansoMotorBomba: { min: 22.10 , max: 25.13 },
   temperaturaInternaEmpuje: { min: 32.07  , max: 39.20 },
   vibracionAxial: { min: -0.41 , max: -0.39 },
-  voltajeBarra: { min: 6431.91, max: 6779.75 }
+  voltajeBarra: { min: 6431.91, max: 6779.75 },
+  
+  // Nuevos sensores (rangos iniciales, ajustar según datos reales)
+  excentricidadBomba: { min: undefined, max: undefined },
+  flujoAguaDomoAP: { min: undefined, max: undefined },
+  flujoAguaDomoMP: { min: undefined, max: undefined },
+  flujoAguaRecalentador: { min: undefined, max: undefined },
+  flujoAguaVaporAlta: { min: undefined, max: undefined },
+  posicionValvulaRecirc: { min: undefined, max: undefined },
+  presionAguaMP: { min: undefined, max: undefined },
+  presionSuccionBAA: { min: undefined, max: undefined },
+  temperaturaEstator: { min: undefined, max: undefined },
+  flujoSalida12FPMFC: { min: undefined, max: undefined }
 })
 
 const crearGrafico = (canvas, data, label) => {
@@ -469,7 +751,8 @@ const crearGrafico = (canvas, data, label) => {
 
 // Propiedad computada para verificar si todos los datos están cargados
 const allDataLoaded = computed(() => {
-  return (
+  // Verificar sensores originales
+  const originalesLoaded = (
     corriente.value &&
     salidaAgua.value &&
     presionAgua.value &&
@@ -481,10 +764,16 @@ const allDataLoaded = computed(() => {
     vibracionAxial.value &&
     voltajeBarra.value
   );
+  
+  // Verificar nuevos sensores (no bloqueamos la carga si alguno no está disponible)
+  // Los nuevos sensores se cargarán cuando estén disponibles
+  return originalesLoaded;
 });
 
 const actualizarGraficos = async () => {
   await nextTick();
+  
+  // Actualizar gráficos de sensores originales
   crearGrafico(corrienteCanvas.value, corriente, "corriente");
   crearGrafico(salidaAguaCanvas.value, salidaAgua, "salidaAgua");
   crearGrafico(presionAguaCanvas.value, presionAgua, "presionAgua");
@@ -511,9 +800,51 @@ const actualizarGraficos = async () => {
   );
   crearGrafico(vibracionAxialCanvas.value, vibracionAxial, "vibracionAxial");
   crearGrafico(voltajeBarraCanvas.value, voltajeBarra, "voltajeBarra");
+  
+  // Actualizar gráficos de nuevos sensores (solo si hay datos disponibles)
+  if (excentricidadBomba.value) {
+    crearGrafico(excentricidadBombaCanvas.value, excentricidadBomba, "excentricidadBomba");
+  }
+  
+  if (flujoAguaDomoAP.value) {
+    crearGrafico(flujoAguaDomoAPCanvas.value, flujoAguaDomoAP, "flujoAguaDomoAP");
+  }
+  
+  if (flujoAguaDomoMP.value) {
+    crearGrafico(flujoAguaDomoMPCanvas.value, flujoAguaDomoMP, "flujoAguaDomoMP");
+  }
+  
+  if (flujoAguaRecalentador.value) {
+    crearGrafico(flujoAguaRecalentadorCanvas.value, flujoAguaRecalentador, "flujoAguaRecalentador");
+  }
+  
+  if (flujoAguaVaporAlta.value) {
+    crearGrafico(flujoAguaVaporAltaCanvas.value, flujoAguaVaporAlta, "flujoAguaVaporAlta");
+  }
+  
+  if (posicionValvulaRecirc.value) {
+    crearGrafico(posicionValvulaRecircCanvas.value, posicionValvulaRecirc, "posicionValvulaRecirc");
+  }
+  
+  if (presionAguaMP.value) {
+    crearGrafico(presionAguaMPCanvas.value, presionAguaMP, "presionAguaMP");
+  }
+  
+  if (presionSuccionBAA.value) {
+    crearGrafico(presionSuccionBAACanvas.value, presionSuccionBAA, "presionSuccionBAA");
+  }
+  
+  if (temperaturaEstator.value) {
+    crearGrafico(temperaturaEstatorCanvas.value, temperaturaEstator, "temperaturaEstator");
+  }
+  
+  if (flujoSalida12FPMFC.value) {
+    crearGrafico(flujoSalida12FPMFCCanvas.value, flujoSalida12FPMFC, "flujoSalida12FPMFC");
+  }
 };
 
 const sensoresLengths = computed(() => ({
+  // Sensores originales
   corriente: corriente.value?.length || 0,
   salidaAgua: salidaAgua.value?.length || 0,
   presionAgua: presionAgua.value?.length || 0,
@@ -524,6 +855,18 @@ const sensoresLengths = computed(() => ({
   temperaturaInternaEmpuje: temperaturaInternaEmpuje.value?.length || 0,
   vibracionAxial: vibracionAxial.value?.length || 0,
   voltajeBarra: voltajeBarra.value?.length || 0,
+  
+  // Nuevos sensores
+  excentricidadBomba: excentricidadBomba.value?.length || 0,
+  flujoAguaDomoAP: flujoAguaDomoAP.value?.length || 0,
+  flujoAguaDomoMP: flujoAguaDomoMP.value?.length || 0,
+  flujoAguaRecalentador: flujoAguaRecalentador.value?.length || 0,
+  flujoAguaVaporAlta: flujoAguaVaporAlta.value?.length || 0,
+  posicionValvulaRecirc: posicionValvulaRecirc.value?.length || 0,
+  presionAguaMP: presionAguaMP.value?.length || 0,
+  presionSuccionBAA: presionSuccionBAA.value?.length || 0,
+  temperaturaEstator: temperaturaEstator.value?.length || 0,
+  flujoSalida12FPMFC: flujoSalida12FPMFC.value?.length || 0,
 }));
 
 watch(

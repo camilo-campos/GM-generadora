@@ -13,12 +13,7 @@
           <h3 class="text-base sm:text-lg font-medium text-[#2E4053]">
             Bitacoras Totales
           </h3>
-          <div class="flex gap-2">
-            <button @click="toggleChartType" 
-                    class="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 transition-colors">
-              {{ isPie ? 'Ver Donut' : 'Ver Pastel' }}
-            </button>
-          </div>
+          
         </div>
 
         <div class="flex flex-col md:flex-row items-center">
@@ -75,7 +70,12 @@
         </div>
 
         <div class="flex flex-col md:flex-row items-center">
-          <div class="w-full md:w-3/5 h-48 sm:h-60">
+          <div class="w-full md:w-3/5 h-48 sm:h-60 relative">
+            <!-- Contenedor centrado para el total de errores -->
+            <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+              <span class="text-2xl font-bold text-gray-700">{{ totalErrores }}</span>
+              <span class="text-sm text-gray-500">Total</span>
+            </div>
             <canvas ref="hrsgSubCanvas"></canvas>
           </div>
           <div class="w-full md:w-2/5 mt-4 md:mt-0 md:pl-4">
@@ -123,7 +123,12 @@
         </div>
 
         <div class="flex flex-col md:flex-row items-center">
-          <div class="w-full md:w-3/5 h-48 sm:h-60">
+          <div class="w-full md:w-3/5 h-48 sm:h-60 relative">
+            <!-- Contenedor centrado para el total de alertas y avisos -->
+            <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+              <span class="text-2xl font-bold text-gray-700">{{ totalAlertasAvisos }}</span>
+              <span class="text-sm text-gray-500">Total</span>
+            </div>
             <canvas ref="alertaAvisoCanvas"></canvas>
           </div>
           <div class="w-full md:w-2/5 mt-4 md:mt-0 md:pl-4">
@@ -168,9 +173,12 @@
 <script setup>
 import { ref, onMounted, watch, computed, nextTick } from "vue";
 import { Chart, registerables } from "chart.js";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useBitacoras } from "@/composables/useBitacoras";
 
+// Registramos los plugins básicos de Chart.js
 Chart.register(...registerables);
+// No registramos ChartDataLabels globalmente para evitar afectar otros componentes
 
 // Referencias para los canvas de cada gráfico
 const clasificacionCanvas = ref(null);
@@ -332,9 +340,33 @@ const createChart = (
 ) => {
   const ctx = canvas.getContext("2d");
   
+  // Configuración para los bordes de colores
+  const borderColors = colors.map(color => color); // Usar los mismos colores para los bordes
+  
+  // Configuración del plugin datalabels (porcentajes en el gráfico)
+  const datalabelsConfig = {
+    formatter: (value, ctx) => {
+      const dataset = ctx.chart.data.datasets[0];
+      const total = dataset.data.reduce((acc, data) => acc + data, 0);
+      const percentage = ((value / total) * 100).toFixed(1) + '%';
+      return percentage;
+    },
+    color: '#fff',
+    font: {
+      weight: 'bold',
+      size: 11
+    },
+    textStrokeColor: 'rgba(0,0,0,0.5)',
+    textStrokeWidth: 2,
+    display: function(context) {
+      // Solo mostrar etiquetas para segmentos con suficiente espacio
+      return context.dataset.data[context.dataIndex] / context.dataset.data.reduce((a, b) => a + b, 0) > 0.05;
+    }
+  };
+  
   // Configuración especial para gráfico de clasificación
   if (isClasificacion) {
-    const chart = new Chart(ctx, {
+    const config = {
       type: isPie.value ? 'pie' : 'doughnut',
       data: {
         labels,
@@ -343,10 +375,10 @@ const createChart = (
             label: title,
             data: values,
             backgroundColor: colors,
-            borderColor: colors,
-            borderWidth: 1,
+            borderColor: borderColors,
+            borderWidth: 2, // Borde más grueso
             hoverOffset: 15,
-            borderRadius: 5,
+            borderRadius: 3,
             spacing: 2
           },
         ],
@@ -372,7 +404,9 @@ const createChart = (
             padding: 10,
             bodyFont: { size: 14 },
             usePointStyle: true
-          }
+          },
+          // Añadir configuración de datalabels
+          datalabels: datalabelsConfig
         },
         animation: {
           animateScale: true,
@@ -380,13 +414,16 @@ const createChart = (
           duration: 800,
           easing: 'easeOutQuart'
         }
-      }
-    });
+      },
+      plugins: [ChartDataLabels] // Aplicar el plugin solo a este gráfico
+    };
+    
+    const chart = new Chart(ctx, config);
     return chart;
   }
   
   // Configuración para otros gráficos
-  const chart = new Chart(ctx, {
+  const config = {
     type,
     data: {
       labels,
@@ -395,8 +432,8 @@ const createChart = (
           label: title,
           data: values,
           backgroundColor: colors,
-          borderColor: colors,
-          borderWidth: 1,
+          borderColor: borderColors,
+          borderWidth: 2, // Borde más grueso
           hoverOffset: 8
         },
       ],
@@ -417,10 +454,15 @@ const createChart = (
               return `${context.label}: ${value} (${percentage}%)`;
             }
           }
-        }
+        },
+        // Añadir configuración de datalabels
+        datalabels: datalabelsConfig
       }
-    }
-  });
+    },
+    plugins: [ChartDataLabels] // Aplicar el plugin solo a este gráfico
+  };
+  
+  const chart = new Chart(ctx, config);
   return chart;
 };
 
