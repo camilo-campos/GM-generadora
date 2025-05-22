@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-6 bg-gray-100">
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-6" :class="props.isDarkMode ? 'bg-gray-900' : 'bg-gray-100'">
     <!-- Botones de visibilidad con indicador de estado activo - Sensores originales -->
     <button 
       @click="corriente_visible = !corriente_visible" 
@@ -263,9 +263,9 @@
     </button>
   </div>
 
-  <div class="p-4 bg-gray-100">
+  <div class="p-4" :class="props.isDarkMode ? 'bg-gray-900' : 'bg-gray-100'">
     <div class="flex flex-wrap gap-2 mb-4">
-      <div class="text-sm font-medium">Gráficos activos:</div>
+      <div class="text-sm font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Gráficos activos:</div>
       <div class="flex flex-wrap gap-2">
         <!-- Etiquetas sensores originales -->
         <span v-if="corriente_visible" class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Corriente</span>
@@ -300,18 +300,18 @@
   
   <div v-show="!isLoading" class="flex flex-col gap-6 mb-6">
     <!-- Gráficos (sin cambios) -->
-    <div v-show="corriente_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
+    <div v-show="corriente_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
       <div class="mb-4">
         <div class="flex justify-center mb-2">
-          <h2 class="text-lg font-semibold">Corriente</h2>
+          <h2 class="text-lg font-semibold" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Corriente</h2>
         </div>
         <div class="flex justify-end">
           <button 
             @click="toggleCorrienteView"
             class="flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
             :class="corrienteViewMode === 'basic' 
-              ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+              ? props.isDarkMode ? 'bg-blue-900 text-blue-200 hover:bg-blue-800' : 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
+              : props.isDarkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
           >
             <svg v-if="corrienteViewMode === 'basic'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -332,11 +332,11 @@
         </div>
         
         <!-- Animación de carga mientras se obtienen los rangos de fechas -->
-        <div v-if="corrienteViewMode === 'loading'" class="absolute inset-0 flex items-center justify-center bg-white">
+        <div v-if="corrienteViewMode === 'loading'" class="absolute inset-0 flex items-center justify-center" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
           <div class="flex flex-col items-center">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mb-3"></div>
-            <p class="text-gray-700 font-medium">Obteniendo datos del sensor...</p>
-            <p class="text-sm text-gray-500 mt-1">Consultando rangos de fechas disponibles</p>
+            <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo datos del sensor...</p>
+            <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando rangos de fechas disponibles</p>
           </div>
         </div>
       </div>
@@ -347,135 +347,135 @@
       </div>
     </div>
     
-    <div v-show="salidaAgua_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Salida de Agua</h2>
+    <div v-show="salidaAgua_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Salida de Agua</h2>
       <div class="w-full h-[300px]">
         <canvas ref="salidaAguaCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="presionAgua_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Presión de Agua</h2>
+    <div v-show="presionAgua_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Presión de Agua</h2>
       <div class="w-full h-[300px]">
         <canvas ref="presionAguaCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="generacionGas_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Generación de Gas</h2>
+    <div v-show="generacionGas_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Generación de Gas</h2>
       <div class="w-full h-[300px]">
         <canvas ref="generacionGasCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="temperaturaAbiente_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Temperatura Ambiente</h2>
+    <div v-show="temperaturaAbiente_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Temperatura Ambiente</h2>
       <div class="w-full h-[300px]">
         <canvas ref="temperaturaAbienteCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="temperaturaDescansoBomba1A_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Temp. Descanso Bomba 1A</h2>
+    <div v-show="temperaturaDescansoBomba1A_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Temp. Descanso Bomba 1A</h2>
       <div class="w-full h-[300px]">
         <canvas ref="temperaturaDescansoBomba1ACanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="temperaturaDescansoMotorBomba_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Temp. Descanso Motor Bomba</h2>
+    <div v-show="temperaturaDescansoMotorBomba_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Temp. Descanso Motor Bomba</h2>
       <div class="w-full h-[300px]">
         <canvas ref="temperaturaDescansoMotorBombaCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="temperaturaInternaEmpuje_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Temp. Interna Empuje</h2>
+    <div v-show="temperaturaInternaEmpuje_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Temp. Interna Empuje</h2>
       <div class="w-full h-[300px]">
         <canvas ref="temperaturaInternaEmpujeCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="vibracionAxial_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Vibración Axial</h2>
+    <div v-show="vibracionAxial_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Vibración Axial</h2>
       <div class="w-full h-[300px]">
         <canvas ref="vibracionAxialCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="voltajeBarra_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Voltaje Barra</h2>
+    <div v-show="voltajeBarra_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Voltaje Barra</h2>
       <div class="w-full h-[300px]">
         <canvas ref="voltajeBarraCanvas"></canvas>
       </div>
     </div>
 
     <!-- Nuevos gráficos -->
-    <div v-show="excentricidadBomba_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Excentricidad Bomba</h2>
+    <div v-show="excentricidadBomba_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Excentricidad Bomba</h2>
       <div class="w-full h-[300px]">
         <canvas ref="excentricidadBombaCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="flujoAguaDomoAP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Flujo Agua Domo AP</h2>
+    <div v-show="flujoAguaDomoAP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Flujo Agua Domo AP</h2>
       <div class="w-full h-[300px]">
         <canvas ref="flujoAguaDomoAPCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="flujoAguaDomoMP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Flujo Agua Domo MP</h2>
+    <div v-show="flujoAguaDomoMP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Flujo Agua Domo MP</h2>
       <div class="w-full h-[300px]">
         <canvas ref="flujoAguaDomoMPCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="flujoAguaRecalentador_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Flujo Agua Recalentador</h2>
+    <div v-show="flujoAguaRecalentador_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Flujo Agua Recalentador</h2>
       <div class="w-full h-[300px]">
         <canvas ref="flujoAguaRecalentadorCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="flujoAguaVaporAlta_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Flujo Agua Vapor Alta</h2>
+    <div v-show="flujoAguaVaporAlta_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Flujo Agua Vapor Alta</h2>
       <div class="w-full h-[300px]">
         <canvas ref="flujoAguaVaporAltaCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="posicionValvulaRecirc_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Posición Válvula Recirc</h2>
+    <div v-show="posicionValvulaRecirc_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Posición Válvula Recirc</h2>
       <div class="w-full h-[300px]">
         <canvas ref="posicionValvulaRecircCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="presionAguaMP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Presión Agua MP</h2>
+    <div v-show="presionAguaMP_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Presión Agua MP</h2>
       <div class="w-full h-[300px]">
         <canvas ref="presionAguaMPCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="presionSuccionBAA_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Presión Succión BAA</h2>
+    <div v-show="presionSuccionBAA_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Presión Succión BAA</h2>
       <div class="w-full h-[300px]">
         <canvas ref="presionSuccionBAACanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="temperaturaEstator_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Temperatura Estator</h2>
+    <div v-show="temperaturaEstator_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Temperatura Estator</h2>
       <div class="w-full h-[300px]">
         <canvas ref="temperaturaEstatorCanvas"></canvas>
       </div>
     </div>
 
-    <div v-show="flujoSalida12FPMFC_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6 bg-white">
-      <h2 class="text-lg font-semibold text-center mb-2">Flujo Salida 12FPMFC</h2>
+    <div v-show="flujoSalida12FPMFC_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+      <h2 class="text-lg font-semibold text-center mb-2" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Flujo Salida 12FPMFC</h2>
       <div class="w-full h-[300px]">
         <canvas ref="flujoSalida12FPMFCCanvas"></canvas>
       </div>
@@ -704,6 +704,10 @@ const crearGrafico = (canvas, data, label) => {
   // Tomamos los límites personalizados si existen
   const rango = rangos[label] || { min: undefined, max: undefined };
 
+  // Colores adaptados al tema
+  const gridColor = props.isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+  const textColor = props.isDarkMode ? '#f3f4f6' : '#333333';
+
   charts[label] = new Chart(canvas, {
     type: "line",
     data: {
@@ -727,21 +731,42 @@ const crearGrafico = (canvas, data, label) => {
         legend: {
           position: "top",
           labels: {
+            color: textColor,
             generateLabels: (chart) => [
               { text: "Normal", fillStyle: "green" },
               { text: "Anomalía", fillStyle: "red" },
             ],
           },
         },
+        tooltip: {
+          backgroundColor: props.isDarkMode ? 'rgba(50,50,50,0.9)' : 'rgba(0,0,0,0.7)',
+          titleColor: props.isDarkMode ? '#f3f4f6' : '#ffffff',
+          bodyColor: props.isDarkMode ? '#f3f4f6' : '#ffffff',
+          padding: 10,
+          bodyFont: { size: 14 },
+          usePointStyle: true
+        }
       },
       scales: {
         y: {
           min: rango.min,
           max: rango.max,
+          grid: {
+            color: gridColor
+          },
           ticks: {
+            color: textColor,
             stepSize: (rango.max - rango.min) / 5 || undefined, // Paso automático si no hay min/max
           },
         },
+        x: {
+          grid: {
+            color: gridColor
+          },
+          ticks: {
+            color: textColor
+          }
+        }
       },
     },
   });
@@ -886,20 +911,8 @@ const handleResize = () => {
   }
 };
 
-onMounted(() => {
-  if (allDataLoaded.value) {
-    actualizarGraficos();
-  }
 
-  window.addEventListener("resize", handleResize);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("resize", handleResize);
-});
-
-
-defineProps({
+const props = defineProps({
   currentView: {
     type: Object,
     default: () => ({
@@ -911,4 +924,27 @@ defineProps({
     default: false,
   },
 });
+
+onMounted(() => {
+  if (allDataLoaded.value) {
+    actualizarGraficos();
+  }
+
+  window.addEventListener("resize", handleResize);
+});
+
+// Actualizar gráficos cuando cambie el tema
+watch(() => props.isDarkMode, () => {
+  nextTick(() => {
+    // Recrear los gráficos con el nuevo tema
+    actualizarGraficos();
+  });
+}, { immediate: false });
+
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
+});
+
+
+
 </script>

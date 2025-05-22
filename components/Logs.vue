@@ -1,6 +1,6 @@
 <template>
   <!-- Estado de carga -->
-  <div v-if="isLoading" class="text-xl font-semibold p-4">
+  <div v-if="isLoading" class="text-xl font-semibold p-4" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">
     Cargando gráficos, por favor espere...
   </div>
   
@@ -8,9 +8,9 @@
   <div v-else class="space-y-6">
     <!-- Bitacoras Totales Chart -->
     <div class="grid grid-cols-1 lg:grid-cols-1 gap-4 sm:gap-6 mb-10">
-      <div class="rounded-lg shadow p-4 sm:p-6 bg-white">
+      <div class="rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
-          <h3 class="text-base sm:text-lg font-medium text-[#2E4053]">
+          <h3 class="text-base sm:text-lg font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-[#2E4053]'">
             Bitacoras Totales
           </h3>
           
@@ -20,13 +20,13 @@
           <div class="w-full md:w-3/5 h-48 sm:h-60 relative">
             <!-- Contenedor centrado para el total -->
             <div v-if="!isPie" class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-              <span class="text-2xl font-bold text-gray-700">{{ totalRegistros }}</span>
-              <span class="text-sm text-gray-500">Total</span>
+              <span class="text-2xl font-bold" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">{{ totalRegistros }}</span>
+              <span class="text-sm" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Total</span>
             </div>
             <canvas ref="clasificacionCanvas"></canvas>
           </div>
           <div class="w-full md:w-2/5 mt-4 md:mt-0 md:pl-4">
-            <h4 class="text-sm font-semibold mb-3 text-gray-700">
+            <h4 class="text-sm font-semibold mb-3" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">
               Resumen de Clasificaciones
             </h4>
             <div class="space-y-3">
@@ -43,15 +43,15 @@
                     class="w-3 h-3 rounded-full mr-2"
                     :style="{ backgroundColor: item.bgColor }"
                   ></div>
-                  <span class="text-sm font-medium">{{ item.label }}</span>
+                  <span class="text-sm font-medium" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">{{ item.label }}</span>
                 </div>
                 <div class="flex flex-col items-end">
-                  <span class="text-sm font-bold">{{ item.value }}</span>
-                  <span class="text-xs text-gray-500">{{ calculatePercentage(item.value, totalRegistros) }}%</span>
+                  <span class="text-sm font-bold" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">{{ item.value }}</span>
+                  <span class="text-xs" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">{{ calculatePercentage(item.value, totalRegistros) }}%</span>
                 </div>
               </div>
             </div>
-            <div class="mt-4 text-xs text-gray-500">
+            <div class="mt-4 text-xs" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
               <p>Total de registros: {{ totalRegistros }}</p>
               <p class="mt-1">Última actualización: {{ formattedDate }}</p>
             </div>
@@ -62,9 +62,9 @@
 
     <!-- Bitacoras de Error Chart -->
     <div class="grid grid-cols-1 lg:grid-cols-1 gap-4 sm:gap-6 mb-10">
-      <div class="rounded-lg shadow p-4 sm:p-6 bg-white">
+      <div class="rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
-          <h3 class="text-base sm:text-lg font-medium text-[#2E4053]">
+          <h3 class="text-base sm:text-lg font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-[#2E4053]'">
             Bitacoras de Error
           </h3>
         </div>
@@ -73,13 +73,13 @@
           <div class="w-full md:w-3/5 h-48 sm:h-60 relative">
             <!-- Contenedor centrado para el total de errores -->
             <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-              <span class="text-2xl font-bold text-gray-700">{{ totalErrores }}</span>
-              <span class="text-sm text-gray-500">Total</span>
+              <span class="text-2xl font-bold" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">{{ totalErrores }}</span>
+              <span class="text-sm" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Total</span>
             </div>
             <canvas ref="hrsgSubCanvas"></canvas>
           </div>
           <div class="w-full md:w-2/5 mt-4 md:mt-0 md:pl-4">
-            <h4 class="text-sm font-semibold mb-3 text-gray-700">
+            <h4 class="text-sm font-semibold mb-3" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">
               Detalle de Errores
             </h4>
             <div class="space-y-3">
@@ -96,15 +96,15 @@
                     class="w-3 h-3 rounded-full mr-2"
                     :style="{ backgroundColor: item.bgColor }"
                   ></div>
-                  <span class="text-sm font-medium">{{ item.label }}</span>
+                  <span class="text-sm font-medium" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">{{ item.label }}</span>
                 </div>
                 <div class="flex flex-col items-end">
-                  <span class="text-sm font-bold">{{ item.value }}</span>
-                  <span class="text-xs text-gray-500">{{ calculatePercentage(item.value, totalErrores) }}%</span>
+                  <span class="text-sm font-bold" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">{{ item.value }}</span>
+                  <span class="text-xs" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">{{ calculatePercentage(item.value, totalErrores) }}%</span>
                 </div>
               </div>
             </div>
-            <div class="mt-4 text-xs text-gray-500">
+            <div class="mt-4 text-xs" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
               <p>Total de errores: {{ totalErrores }}</p>
               <p class="mt-1">Porcentaje del total: {{ porcentajeErrores }}%</p>
             </div>
@@ -115,9 +115,9 @@
 
     <!-- Bitacoras de Alerta y Aviso Chart -->
     <div class="grid grid-cols-1 lg:grid-cols-1 gap-4 sm:gap-6">
-      <div class="rounded-lg shadow p-4 sm:p-6 bg-white">
+      <div class="rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
-          <h3 class="text-base sm:text-lg font-medium text-[#2E4053]">
+          <h3 class="text-base sm:text-lg font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-[#2E4053]'">
             Bitacoras de Alerta y Aviso
           </h3>
         </div>
@@ -126,13 +126,13 @@
           <div class="w-full md:w-3/5 h-48 sm:h-60 relative">
             <!-- Contenedor centrado para el total de alertas y avisos -->
             <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-              <span class="text-2xl font-bold text-gray-700">{{ totalAlertasAvisos }}</span>
-              <span class="text-sm text-gray-500">Total</span>
+              <span class="text-2xl font-bold" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">{{ totalAlertasAvisos }}</span>
+              <span class="text-sm" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Total</span>
             </div>
             <canvas ref="alertaAvisoCanvas"></canvas>
           </div>
           <div class="w-full md:w-2/5 mt-4 md:mt-0 md:pl-4">
-            <h4 class="text-sm font-semibold mb-3 text-gray-700">
+            <h4 class="text-sm font-semibold mb-3" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">
               Distribución de Alertas y Avisos
             </h4>
             <div class="space-y-3">
@@ -149,15 +149,15 @@
                     class="w-3 h-3 rounded-full mr-2"
                     :style="{ backgroundColor: item.bgColor }"
                   ></div>
-                  <span class="text-sm font-medium">{{ item.label }}</span>
+                  <span class="text-sm font-medium" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">{{ item.label }}</span>
                 </div>
                 <div class="flex flex-col items-end">
-                  <span class="text-sm font-bold">{{ item.value }}</span>
-                  <span class="text-xs text-gray-500">{{ calculatePercentage(item.value, totalAlertasAvisos) }}%</span>
+                  <span class="text-sm font-bold" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">{{ item.value }}</span>
+                  <span class="text-xs" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">{{ calculatePercentage(item.value, totalAlertasAvisos) }}%</span>
                 </div>
               </div>
             </div>
-            <div class="mt-4 text-xs text-gray-500">
+            <div class="mt-4 text-xs" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
               <p>Total de alertas y avisos: {{ totalAlertasAvisos }}</p>
               <p class="mt-1">
                 Proporción alertas/avisos: {{ proporcionAlertasAvisos }}
@@ -343,6 +343,10 @@ const createChart = (
   // Configuración para los bordes de colores
   const borderColors = colors.map(color => color); // Usar los mismos colores para los bordes
   
+  // Colores adaptados al tema
+  const gridColor = props.isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+  const textColor = props.isDarkMode ? '#f3f4f6' : '#333333';
+  
   // Configuración del plugin datalabels (porcentajes en el gráfico)
   const datalabelsConfig = {
     formatter: (value, ctx) => {
@@ -356,7 +360,7 @@ const createChart = (
       weight: 'bold',
       size: 11
     },
-    textStrokeColor: 'rgba(0,0,0,0.5)',
+    textStrokeColor: props.isDarkMode ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.5)',
     textStrokeWidth: 2,
     display: function(context) {
       // Solo mostrar etiquetas para segmentos con suficiente espacio
@@ -390,6 +394,9 @@ const createChart = (
         plugins: {
           legend: {
             display: false,
+            labels: {
+              color: textColor
+            }
           },
           tooltip: {
             callbacks: {
@@ -400,7 +407,9 @@ const createChart = (
                 return `${context.label}: ${value} (${percentage}%)`;
               }
             },
-            backgroundColor: 'rgba(0,0,0,0.7)',
+            backgroundColor: props.isDarkMode ? 'rgba(50,50,50,0.9)' : 'rgba(0,0,0,0.7)',
+            titleColor: props.isDarkMode ? '#f3f4f6' : '#ffffff',
+            bodyColor: props.isDarkMode ? '#f3f4f6' : '#ffffff',
             padding: 10,
             bodyFont: { size: 14 },
             usePointStyle: true
@@ -444,6 +453,9 @@ const createChart = (
       plugins: {
         legend: {
           display: false,
+          labels: {
+            color: textColor
+          }
         },
         tooltip: {
           callbacks: {
@@ -453,10 +465,34 @@ const createChart = (
               const percentage = ((value / total) * 100).toFixed(1);
               return `${context.label}: ${value} (${percentage}%)`;
             }
-          }
+          },
+          backgroundColor: props.isDarkMode ? 'rgba(50,50,50,0.9)' : 'rgba(0,0,0,0.7)',
+          titleColor: props.isDarkMode ? '#f3f4f6' : '#ffffff',
+          bodyColor: props.isDarkMode ? '#f3f4f6' : '#ffffff',
+          padding: 10,
+          bodyFont: { size: 14 },
+          usePointStyle: true
         },
         // Añadir configuración de datalabels
         datalabels: datalabelsConfig
+      },
+      scales: {
+        y: {
+          grid: {
+            color: gridColor
+          },
+          ticks: {
+            color: textColor
+          }
+        },
+        x: {
+          grid: {
+            color: gridColor
+          },
+          ticks: {
+            color: textColor
+          }
+        }
       }
     },
     plugins: [ChartDataLabels] // Aplicar el plugin solo a este gráfico
@@ -588,6 +624,8 @@ watch(isPie, () => {
   updateCharts();
 });
 
+
+
 // Inicializar gráficos cuando el componente se monta
 onMounted(() => {
   if (bitacoras.value && bitacoras.value.length > 0) {
@@ -596,7 +634,7 @@ onMounted(() => {
 });
 
 
-defineProps({
+const props = defineProps({
   currentView: {
     type: Object,
     default: () => ({
@@ -608,4 +646,17 @@ defineProps({
     default: false,
   },
 });
+
+// Actualizar gráficos cuando cambie el tema
+watch(() => props.isDarkMode, () => {
+  nextTick(() => {
+    // Destruir los gráficos existentes antes de recrearlos
+    if (clasificacionChart.value) clasificacionChart.value.destroy();
+    if (hrsgSubChart.value) hrsgSubChart.value.destroy();
+    if (alertaAvisoChart.value) alertaAvisoChart.value.destroy();
+    
+    // Recrear los gráficos con el nuevo tema
+    updateCharts();
+  });
+}, { immediate: false });
 </script>
