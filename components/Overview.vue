@@ -1,10 +1,5 @@
 <template>
-  
-  
-
-  <!-- Main Chart Area - Now using grid for equal sizing -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-    <!-- Sección de alertas de sensores con paginación -->
     <div class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
         <h3 
@@ -14,7 +9,6 @@
           Alertas de Sensores
         </h3>
         
-        <!-- Filtros para alertas -->
         <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
           <button 
             @click="filtroActualAlertas = 'TODOS'; paginaActualAlertas = 1" 
@@ -75,17 +69,14 @@
       </div>
 
       <div v-else class="flex-grow flex flex-col">
-        <!-- Mostrar un mensaje si no hay alertas disponibles -->
         <div v-if="!alertas || alertas.length === 0" class="h-full flex items-center justify-center" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
           No hay alertas registradas.
         </div>
         
-        <!-- Mostrar un mensaje si hay alertas pero ninguna coincide con el filtro -->
         <div v-else-if="alertasFiltradas.length === 0" class="h-full flex items-center justify-center" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
           No se encontraron resultados para el filtro seleccionado.
         </div>
         
-        <!-- Recorrer y mostrar las alertas filtradas y paginadas -->
         <div v-else class="space-y-3 flex-grow overflow-auto">
           <div
             v-for="alerta in alertasPaginadas"
@@ -143,10 +134,9 @@
           </div>
         </div>
         
-        <!-- Controles de paginación -->
         <div v-if="alertasFiltradas.length > elementosPorPaginaAlertas" 
-             class="mt-4 flex items-center justify-between pt-3"
-             :class="props.isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200'">
+              class="mt-4 flex items-center justify-between pt-3"
+              :class="props.isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200'">
           <div class="flex items-center text-xs" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
             Mostrando {{ (paginaActualAlertas - 1) * elementosPorPaginaAlertas + 1 }} - 
             {{ Math.min(paginaActualAlertas * elementosPorPaginaAlertas, alertasFiltradas.length) }} 
@@ -192,7 +182,6 @@
       </div>
     </div>
 
-    <!-- Sección de bitacoras con paginación -->
     <div class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
         <h3 
@@ -202,7 +191,6 @@
           Bitacoras de Alertas y Avisos
         </h3>
         
-        <!-- Filtros -->
         <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
           <button 
             @click="filtroActual = 'TODOS'; paginaActual = 1" 
@@ -251,17 +239,14 @@
       </div>
       
       <div v-else class="flex-grow flex flex-col">
-        <!-- Mostrar un mensaje si no hay alertas disponibles -->
         <div v-if="bitacorasConAlerta.length === 0" class="h-full flex items-center justify-center" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
           No se encontraron alertas ni avisos.
         </div>
         
-        <!-- Mostrar un mensaje si hay alertas pero ninguna coincide con el filtro -->
         <div v-else-if="bitacorasFiltradas.length === 0" class="h-full flex items-center justify-center" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
           No se encontraron resultados para el filtro seleccionado.
         </div>
         
-        <!-- Recorrer y mostrar las bitácoras filtradas y paginadas -->
         <div v-else class="space-y-3 flex-grow overflow-auto">
           <div
             v-for="alerta in bitacorasPaginadas"
@@ -312,10 +297,9 @@
           </div>
         </div>
         
-        <!-- Controles de paginación -->
         <div v-if="bitacorasFiltradas.length > elementosPorPagina" 
-             class="mt-4 flex items-center justify-between pt-3"
-             :class="props.isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200'">
+              class="mt-4 flex items-center justify-between pt-3"
+              :class="props.isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200'">
           <div class="flex items-center text-xs" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
             Mostrando {{ (paginaActual - 1) * elementosPorPagina + 1 }} - 
             {{ Math.min(paginaActual * elementosPorPagina, bitacorasFiltradas.length) }} 
@@ -362,7 +346,6 @@
     </div>
   </div>
 
-  <!-- Indicadores de estado de carga y botón de refrescar -->
   <div class="flex flex-wrap items-center justify-between mb-4">
     <div class="flex flex-wrap gap-2">
       <span class="px-2 py-1 text-xs rounded-full flex items-center" 
@@ -381,7 +364,6 @@
       </span>
     </div>
     
-    <!-- Botón de refrescar -->
     <button @click="refrescarDatos" 
       class="px-3 py-1 text-sm font-medium rounded-lg shadow transition-colors flex items-center gap-1
         focus:outline-none focus:ring-2"
@@ -395,90 +377,81 @@
     </button>
   </div>
 
-  <!-- Secondary Charts Grid - Bombas -->
   <div class="grid grid-cols-1 gap-4 sm:gap-6">
-    <!-- Bomba 1 Chart -->
     <div 
-  v-if="!dataStatus.bomba1Ready" 
-  class="rounded-lg shadow p-4 sm:p-6 min-h-[320px] flex items-center justify-center relative overflow-hidden"
-  :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
->
-  <!-- Efecto de pulso en el fondo -->
-  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-50 to-transparent opacity-10 animate-pulse"></div>
-  
-  <div class="flex flex-col items-center z-10">
-    <!-- Spinner con Tailwind -->
-    <div class="h-14 w-14 rounded-full border-4 border-gray-200 border-t-red-600 animate-spin mb-4"></div>
-    
-    <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo predicciones de la bomba A</p>
-    <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando datos de probabilidad de fallas</p>
-    
-    <!-- Barra de progreso animada -->
-    <div class="w-48 h-1.5 bg-gray-200 rounded-full mt-4 overflow-hidden">
-      <div class="h-full bg-red-600 animate-pulse" style="width: 70%"></div>
-    </div>
-    
-    <p class="text-xs mt-2" :class="props.isDarkMode ? 'text-gray-500' : 'text-gray-400'">Este proceso puede tardar unos segundos...</p>
-  </div>
-</div>
-<div
-  v-else
-  class="rounded-lg shadow p-4 sm:p-6"
-  :class="props.isDarkMode ? 'bg-white' : 'bg-white'"
->
-  <div class="flex items-center justify-between mb-3 sm:mb-4">
-    <h3
-      class="text-base sm:text-lg font-medium"
-      :class="props.isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
+      v-if="!dataStatus.bomba1Ready" 
+      class="rounded-lg shadow p-4 sm:p-6 min-h-[320px] flex items-center justify-center relative overflow-hidden"
+      :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
     >
-      Bomba 1 - Estado Operativo
-    </h3>
-    <div class="flex items-center space-x-2">
-      <div class="flex items-center">
-        <div class="w-3 h-3 rounded-full bg-green-500 mr-1"></div>
-        <span class="text-xs text-gray-600">Operativa</span>
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-50 to-transparent opacity-10 animate-pulse"></div>
+      
+      <div class="flex flex-col items-center z-10">
+        <div class="h-14 w-14 rounded-full border-4 border-gray-200 border-t-red-600 animate-spin mb-4"></div>
+        
+        <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo predicciones de la bomba A</p>
+        <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando datos de probabilidad de fallas</p>
+        
+        <div class="w-48 h-1.5 bg-gray-200 rounded-full mt-4 overflow-hidden">
+          <div class="h-full bg-red-600 animate-pulse" style="width: 70%"></div>
+        </div>
+        
+        <p class="text-xs mt-2" :class="props.isDarkMode ? 'text-gray-500' : 'text-gray-400'">Este proceso puede tardar unos segundos...</p>
       </div>
     </div>
-  </div>
-
-  <div class="flex flex-col lg:flex-row items-center">
-    <div class="w-full lg:w-3/4 h-48 sm:h-72">
-      <canvas ref="bomba1Canvas"></canvas>
-    </div>
-    <div class="w-full lg:w-1/4 mt-4 lg:mt-0 lg:pl-4">
-      <div class="space-y-3">
-        <div
-          v-for="(item, index) in bomba1Stats"
-          :key="index"
-          class="flex items-center justify-between p-2 rounded-md"
-          :class="item.bgColor"
+    <div
+      v-else
+      class="rounded-lg shadow p-4 sm:p-6"
+      :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
+    >
+      <div class="flex items-center justify-between mb-3 sm:mb-4">
+        <h3
+          class="text-base sm:text-lg font-medium"
+          :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
         >
-          <span class="text-sm font-medium">{{ item.label }}</span>
-          <span class="text-sm font-bold">{{ item.value }}</span>
+          Bomba 1 - Estado Operativo
+        </h3>
+        <div class="flex items-center space-x-2">
+          <div class="flex items-center">
+            <div class="w-3 h-3 rounded-full bg-green-500 mr-1"></div>
+            <span class="text-xs text-gray-600">Operativa</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col lg:flex-row items-center">
+        <div class="w-full lg:w-3/4 h-48 sm:h-72">
+          <canvas ref="bomba1Canvas"></canvas>
+        </div>
+        <div class="w-full lg:w-1/4 mt-4 lg:mt-0 lg:pl-4">
+          <div class="space-y-3">
+            <div
+              v-for="(item, index) in bomba1Stats"
+              :key="index"
+              class="flex items-center justify-between p-2 rounded-md"
+              :class="item.bgColor"
+            >
+              <span class="text-sm font-medium">{{ item.label }}</span>
+              <span class="text-sm font-bold">{{ item.value }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
 
-    <!-- Bomba 2 Chart -->
     <div
       v-if="!dataStatus.bomba2Ready" 
       class="rounded-lg shadow p-4 sm:p-6 min-h-[320px] flex items-center justify-center relative overflow-hidden"
       :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
     >
-      <!-- Efecto de pulso en el fondo -->
       <div class="absolute inset-0 bg-gradient-to-r from-transparent via-blue-50 to-transparent opacity-10 animate-pulse"></div>
       
       <div class="flex flex-col items-center z-10">
-        <!-- Spinner con Tailwind -->
         <div class="h-14 w-14 rounded-full border-4 border-gray-200 border-t-blue-600 animate-spin mb-4"></div>
         
         <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo predicciones de la bomba B</p>
         <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando datos de probabilidad de fallas</p>
         
-        <!-- Barra de progreso animada -->
         <div class="w-48 h-1.5 bg-gray-200 rounded-full mt-4 overflow-hidden">
           <div class="h-full bg-blue-600 animate-pulse" style="width: 70%"></div>
         </div>
@@ -489,12 +462,12 @@
     <div
       v-else
       class="rounded-lg shadow p-4 sm:p-6"
-      :class="props.isDarkMode ? 'bg-white' : 'bg-white'"
+      :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
     >
       <div class="flex items-center justify-between mb-3 sm:mb-4">
         <h3
           class="text-base sm:text-lg font-medium"
-          :class="props.isDarkMode ? 'text-[#333333]' : 'text-[#2E4053]'"
+          :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
         >
           Bomba 2 - Rendimiento
         </h3>
@@ -529,17 +502,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed, watch, nextTick, onUnmounted } from "vue";
 import { Chart, registerables } from "chart.js";
 import { useBitacoras } from "@/composables/useBitacoras";
 import { useAlertas } from "@/composables/useAlertas";
+import { usePrediccionesBombaA } from "@/composables/usePrediccionBombas";
+import { usePrediccionesBombab } from "@/composables/usePrediccionBombasb";
 
 // ── BITÁCORAS ───────────────────────────────────────────────
 const { bitacoras, isLoading } = useBitacoras()
 const filtroActual = ref('TODOS')
 const paginaActual = ref(1)
 const elementosPorPagina = 4
-// El watcher para el tema se moverá después de la definición de props
 
 const bitacorasConAlerta = computed(() =>
   (bitacoras.value || []).filter(b => b.alerta_aviso != null)
@@ -686,19 +660,15 @@ watch(totalPaginasAlertas, n => {
 
 // ── UTILIDADES ────────────────────────────────────────────
 const formatearFecha = fechaStr => {
-  try {
+  try { {
     return new Intl.DateTimeFormat('es-ES', {
       day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
     }).format(new Date(fechaStr))
-  } catch {
+  } } catch {
     return fechaStr
   }
 }
-
-
-
-
 
 Chart.register(...registerables);
 
@@ -719,39 +689,35 @@ const props = defineProps({
 watch(() => props.isDarkMode, (newValue) => {
   console.log('Tema cambiado a:', newValue ? 'oscuro' : 'claro');
   // Actualizar los gráficos cuando cambia el tema
+  // Un pequeño retraso para asegurar que Vue haya actualizado el DOM si es necesario
   setTimeout(() => {
-    if (typeof actualizarGraficos === 'function') {
-      actualizarGraficos();
-    }
-  }, 100); // Pequeño retraso para asegurar que todo esté inicializado
+    actualizarGraficos();
+  }, 100);
 });
 
 // Propiedades locales para esta vista
-import { usePrediccionesBombaA } from "@/composables/usePrediccionBombas";
-
 const { predicciones, isLoadingPredicciones, errorPredicciones } = usePrediccionesBombaA();
+const { prediccionesBombab, isLoadingPrediccionesBombab, errorPrediccionesBombab } = usePrediccionesBombab();
 
-console.log(predicciones.value);
-
-// Mostrar datos solo cuando la petición se resuelve
-// (esto va en el template, pero aquí dejamos la lógica clara)
+console.log("Predicciones Bomba A:", predicciones.value);
+console.log("Predicciones Bomba B:", prediccionesBombab.value);
 
 const bomba1Canvas = ref(null);
 const bomba2Canvas = ref(null);
 
+// Colores dinámicos para los datasets de Bomba A
+const bombaA_borderColor = computed(() => props.isDarkMode ? 'rgba(255, 99, 132, 1)' : 'rgba(239, 68, 68, 1)');
+const bombaA_backgroundColor = computed(() => props.isDarkMode ? 'rgba(255, 99, 132, 0.2)' : 'rgba(239, 68, 68, 0.2)');
+
 // Datos para Bomba 1 - Serie temporal de fallas
-
-
-
-
-const bomba1Data = ref({
-  labels: [],
+const bomba1Data = computed(() => ({
+  labels: predicciones.value?.map(p => p.hora_ejecucion) || [],
   datasets: [
     {
       label: 'Probabilidad de Falla (%)',
-      data: [],
-      borderColor: 'rgba(239, 68, 68, 1)',
-      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+      data: predicciones.value?.map(p => p.valor_prediccion) || [],
+      borderColor: bombaA_borderColor.value,
+      backgroundColor: bombaA_backgroundColor.value,
       tension: 0.3,
       fill: true,
       borderWidth: 2,
@@ -759,96 +725,99 @@ const bomba1Data = ref({
       pointHoverRadius: 5,
     },
   ],
-});
+}));
 
-const graficoListo = ref(false);
-const bomba2Listo = ref(false);
+const graficoListo = ref(false); // Indica si los datos de Bomba 1 están listos para el gráfico
+const bomba2Listo = ref(false); // Indica si los datos de Bomba 2 están listos para el gráfico
+
+// Colores dinámicos para los datasets de Bomba B
+const bombaB_borderColor = computed(() => props.isDarkMode ? 'rgba(54, 162, 235, 1)' : 'rgba(59, 130, 246, 1)');
+const bombaB_backgroundColor = computed(() => props.isDarkMode ? 'rgba(54, 162, 235, 0.2)' : 'rgba(59, 130, 246, 0.2)');
 
 // Datos para Bomba 2
-const bomba2Data = ref({
-  labels: Array.from({ length: 24 }, (_, i) => {
-    const date = new Date();
-    date.setHours(i, 0, 0, 0);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }),
+const bomba2Data = computed(() => ({
+  labels: prediccionesBombab.value?.map(p => p.hora_ejecucion) || [],
   datasets: [
     {
-      label: 'Probabilidad de fallas',
-      data: [25, 40, 85, 60, 75, 35, 90, 65, 45, 30, 55, 70, 20, 50, 80, 40, 60, 30, 85, 70, 45, 65, 30, 55],
-      borderColor: 'rgba(239, 68, 68, 0.8)',
-      backgroundColor: 'rgba(239, 68, 68, 0.2)',
-      fill: true,
+      label: 'Probabilidad de Falla (%)',
+      data: prediccionesBombab.value?.map(p => p.valor_prediccion) || [],
+      borderColor: bombaB_borderColor.value,
+      backgroundColor: bombaB_backgroundColor.value,
       tension: 0.3,
-      pointRadius: 4,
-      pointBackgroundColor: 'rgba(239, 68, 68, 1)',
+      fill: true,
+      borderWidth: 2,
+      pointRadius: 3,
+      pointHoverRadius: 5,
     },
   ],
-});
+}));
 
 // Propiedad computada para verificar estados de carga
 const dataStatus = computed(() => {
   // Para debug
   if (process.client) {
     console.log('Estado de carga:', { 
-      isLoadingPredicciones: isLoadingPredicciones.value, 
+      isLoadingPredicciones: isLoadingPredicciones.value,
+      isLoadingPrediccionesBombab: isLoadingPrediccionesBombab.value,
       graficoListo: graficoListo.value,
       bomba2Listo: bomba2Listo.value,
-      tienePredicciones: !!predicciones.value?.length
+      tienePredicciones: !!predicciones.value?.length,
+      tienePrediccionesBombab: !!prediccionesBombab.value?.length
     });
   }
   
   return {
     bomba1Ready: !isLoadingPredicciones.value && graficoListo.value,
-    bomba2Ready: bomba2Listo.value,
+    bomba2Ready: !isLoadingPrediccionesBombab.value && bomba2Listo.value,
     alertasReady: alertas?.value && Array.isArray(alertas.value) && alertas.value.length > 0,
     bitacorasReady: bitacorasConAlerta?.value && Array.isArray(bitacorasConAlerta.value) && bitacorasConAlerta.value.length > 0,
-    allReady: !isLoadingPredicciones.value && graficoListo.value && bomba2Listo.value
+    allReady: !isLoadingPredicciones.value && graficoListo.value && !isLoadingPrediccionesBombab.value && bomba2Listo.value
   };
 });
 
-// Usar watch en lugar de watchEffect para mayor control
+// Usar watch para predicciones de Bomba A
 watch(
   predicciones,
-  (nuevoValor, valorAnterior) => {
+  (nuevoValor) => {
     if (process.client) {
-      console.log('watch predicciones:', { 
+      console.log('watch predicciones Bomba A:', { 
         nuevoValor,
         tieneNuevosDatos: nuevoValor?.length > 0
       });
       
       if (nuevoValor && Array.isArray(nuevoValor) && nuevoValor.length > 0) {
-        // Actualizar datos del gráfico
-        bomba1Data.value.labels = nuevoValor.map(p => p.hora_ejecucion);
-        bomba1Data.value.datasets[0].data = nuevoValor.map(p => p.valor_prediccion);
         graficoListo.value = true;
-        console.log('Datos de bomba 1 actualizados y listos!');
-        
-        // Forzar la actualización del gráfico
+        console.log('Datos de Bomba A actualizados y listos!');
         nextTick(() => actualizarGraficos());
       } else {
         graficoListo.value = false;
       }
     }
   },
-  { deep: true, immediate: true } // immediate: true hace que se ejecute inmediatamente al montar el componente
+  { deep: true, immediate: true }
 );
 
-// Verificar cuando los datos de la bomba 2 están listos
-watchEffect(() => {
-  if (bomba2Data.value.datasets[0].data.length > 0) {
-    bomba2Listo.value = true;
-  } else {
-    bomba2Listo.value = false;
-  }
-});
-
-// Configuración adicional de la Bomba 2
-// La definición de bomba2Data se movió arriba antes de dataStatus
-
-// Configuración adicional para los datasets
-const configureDatasets = () => {
-  // Ya configurado arriba
-};
+// NUEVO: Usar watch para predicciones de Bomba B
+watch(
+  prediccionesBombab,
+  (nuevoValor) => {
+    if (process.client) {
+      console.log('watch predicciones Bomba B:', { 
+        nuevoValor,
+        tieneNuevosDatos: nuevoValor?.length > 0
+      });
+      
+      if (nuevoValor && Array.isArray(nuevoValor) && nuevoValor.length > 0) {
+        bomba2Listo.value = true;
+        console.log('Datos de Bomba B actualizados y listos!');
+        nextTick(() => actualizarGraficos());
+      } else {
+        bomba2Listo.value = false;
+      }
+    }
+  },
+  { deep: true, immediate: true }
+);
 
 // Estadísticas para Bomba 1
 const bomba1Stats = ref([
@@ -897,14 +866,92 @@ const stats = [
   },
 ];
 
-// Datos de alertas relacionadas con sensores
-
-
 // Objetos para almacenar las instancias de los gráficos
 let charts = {
   mainChart: null,
   bomba1Chart: null,
   bomba2Chart: null
+};
+
+// Función para obtener las opciones comunes del gráfico, adaptadas al tema
+const getChartOptions = (isDarkMode) => {
+  const gridColor = isDarkMode ? 'rgba(75, 85, 99, 0.2)' : 'rgba(229, 231, 235, 0.6)';
+  const textColor = isDarkMode ? 'rgba(209, 213, 219, 0.8)' : 'rgba(55, 65, 81, 0.8)';
+  const titleColor = isDarkMode ? 'rgba(229, 231, 235, 0.9)' : 'rgba(17, 24, 39, 0.9)';
+
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          boxWidth: 12,
+          padding: 15,
+          font: {
+            size: 11,
+            color: textColor, // Color de la leyenda
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return `${context.dataset.label}: ${context.raw}%`;
+          }
+        },
+        backgroundColor: isDarkMode ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.9)',
+        titleColor: titleColor,
+        bodyColor: textColor,
+      }
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Hora del día',
+          font: {
+            weight: 'bold',
+            color: titleColor, // Color del título del eje X
+          }
+        },
+        grid: {
+          display: false,
+          color: gridColor, // Color de la cuadrícula
+        },
+        ticks: {
+          maxRotation: 45,
+          minRotation: 45,
+          color: textColor, // Color de las etiquetas del eje X
+        }
+      },
+      y: {
+        min: 0,
+        max: 100,
+        title: {
+          display: true,
+          text: 'Rendimiento (%)',
+          font: {
+            weight: 'bold',
+            color: titleColor, // Color del título del eje Y
+          }
+        },
+        ticks: {
+          callback: function(value) {
+            return value + '%';
+          },
+          color: textColor, // Color de las etiquetas del eje Y
+        },
+        grid: {
+          color: gridColor, // Color de la cuadrícula
+        }
+      }
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuart'
+    },
+  };
 };
 
 // Función asíncrona para crear/actualizar todos los gráficos
@@ -914,26 +961,29 @@ const actualizarGraficos = async () => {
   await nextTick();
   
   console.log('Actualizando gráficos...', {
-    tieneCanvas: !!bomba1Canvas.value,
+    tieneCanvasBomba1: !!bomba1Canvas.value,
     graficoListo: graficoListo.value,
-    datosDisponibles: bomba1Data.value.datasets[0].data.length > 0
+    datosDisponiblesBomba1: bomba1Data.value.datasets[0].data.length > 0,
+    tieneCanvasBomba2: !!bomba2Canvas.value,
+    bomba2Listo: bomba2Listo.value,
+    datosDisponiblesBomba2: bomba2Data.value.datasets[0].data.length > 0
   });
   
-  // Actualizar gráfico principal
+  // Actualizar gráfico principal (si existe y es relevante)
   const canvas = document.getElementById("anomalyChart");
   if (canvas) {
     try {
-      // Destruir instancia existente si la hay
       if (charts.mainChart) charts.mainChart.destroy();
-      
       const ctx = canvas.getContext("2d");
+      // Asumo que 'labels' y 'datasets' para el mainChart están definidos en otro lugar
+      // o que este gráfico no es el foco principal de la solicitud.
       charts.mainChart = new Chart(ctx, {
         type: "line",
         data: {
-          labels: labels.value,
-          datasets: datasets.value,
+          labels: [], // Reemplazar con tus labels
+          datasets: [], // Reemplazar con tus datasets
         },
-        options: { responsive: true },
+        options: getChartOptions(props.isDarkMode), // Usar las opciones comunes
       });
     } catch (error) {
       console.error('Error al crear el gráfico principal:', error);
@@ -943,80 +993,13 @@ const actualizarGraficos = async () => {
   // Actualizar gráfico de Bomba 1
   if (bomba1Canvas.value && graficoListo.value) {
     try {
-      // Destruir instancia existente si la hay
       if (charts.bomba1Chart) charts.bomba1Chart.destroy();
-      
       const ctx1 = bomba1Canvas.value.getContext("2d");
-      
-      // Configuraciones basadas en el tema
-      const gridColor = props.isDarkMode ? 'rgba(75, 85, 99, 0.2)' : 'rgba(229, 231, 235, 0.6)';
-      const textColor = props.isDarkMode ? 'rgba(209, 213, 219, 0.8)' : 'rgba(55, 65, 81, 0.8)';
-      const titleColor = props.isDarkMode ? 'rgba(229, 231, 235, 0.9)' : 'rgba(17, 24, 39, 0.9)';
       
       charts.bomba1Chart = new Chart(ctx1, {
         type: "line",
-        data: bomba1Data.value,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              labels: {
-                boxWidth: 12,
-                padding: 15,
-                font: {
-                  size: 11,
-                },
-              },
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `${context.dataset.label}: ${context.raw}%`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: 'Hora del día',
-                font: {
-                  weight: 'bold'
-                }
-              },
-              grid: {
-                display: false
-              },
-              ticks: {
-                maxRotation: 45,
-                minRotation: 45
-              }
-            },
-            y: {
-              min: 0,
-              max: 100,
-              title: {
-                display: true,
-                text: 'Rendimiento (%)',
-                font: {
-                  weight: 'bold'
-                }
-              },
-              ticks: {
-                callback: function(value) {
-                  return value + '%';
-                }
-              }
-            }
-          },
-          animation: {
-            duration: 1000,
-            easing: 'easeInOutQuart'
-          },
-        },
+        data: bomba1Data.value, // Ahora bomba1Data es una computed, se actualizará automáticamente
+        options: getChartOptions(props.isDarkMode), // Usar las opciones comunes y el tema
       });
       console.log('Gráfico de Bomba 1 creado exitosamente');
     } catch (error) {
@@ -1030,80 +1013,26 @@ const actualizarGraficos = async () => {
   }
   
   // Actualizar gráfico de Bomba 2
-  if (bomba2Canvas.value) {
+  if (bomba2Canvas.value && bomba2Listo.value) { // Asegurarse de que los datos estén listos
     try {
-      // Destruir instancia existente si la hay
       if (charts.bomba2Chart) charts.bomba2Chart.destroy();
-      
       const ctx2 = bomba2Canvas.value.getContext("2d");
+      
       charts.bomba2Chart = new Chart(ctx2, {
         type: "line",
-        data: bomba2Data.value,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              labels: {
-                boxWidth: 12,
-                padding: 15,
-                font: {
-                  size: 11,
-                },
-              },
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `${context.dataset.label}: ${context.raw}%`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: 'Hora del día',
-                font: {
-                  weight: 'bold'
-                }
-              },
-              grid: {
-                display: false
-              },
-              ticks: {
-                maxRotation: 45,
-                minRotation: 45
-              }
-            },
-            y: {
-              min: 0,
-              max: 100,
-              title: {
-                display: true,
-                text: 'Rendimiento (%)',
-                font: {
-                  weight: 'bold'
-                }
-              },
-              ticks: {
-                callback: function(value) {
-                  return value + '%';
-                }
-              }
-            }
-          },
-          animation: {
-            duration: 1000,
-            easing: 'easeInOutQuart'
-          },
-        },
+        data: bomba2Data.value, // Ahora bomba2Data es una computed, se actualizará automáticamente
+        options: getChartOptions(props.isDarkMode), // Usar las opciones comunes y el tema
       });
+      console.log('Gráfico de Bomba 2 creado exitosamente');
     } catch (error) {
       console.error('Error al crear el gráfico de Bomba 2:', error);
     }
+  } else {
+    console.log('No se puede crear gráfico de Bomba 2:', {
+      tieneCanvas: !!bomba2Canvas.value,
+      bomba2Listo: bomba2Listo.value,
+      isLoadingPrediccionesBombab: isLoadingPrediccionesBombab.value // Para depuración
+    });
   }
 };
 
@@ -1111,14 +1040,17 @@ const actualizarGraficos = async () => {
 const refrescarDatos = async () => {
   console.log('Refrescando datos manualmente...');
   
-  // Forzar refetch si usas TanStack Query
-  if (typeof refetchPredicciones === 'function') {
-    await refetchPredicciones();
-  }
+  // Forzar refetch si usas TanStack Query (si tus composables lo exponen)
+  // if (typeof refetchPredicciones === 'function') {
+  //   await refetchPredicciones();
+  // }
+  // if (typeof refetchPrediccionesBombab === 'function') {
+  //   await refetchPrediccionesBombab();
+  // }
   
   // Reiniciar estados para forzar actualización
   graficoListo.value = predicciones.value && predicciones.value.length > 0;
-  bomba2Listo.value = true;
+  bomba2Listo.value = prediccionesBombab.value && prediccionesBombab.value.length > 0;
   
   // Regenerar gráficos
   await actualizarGraficos();
@@ -1128,21 +1060,11 @@ const refrescarDatos = async () => {
 
 // Manejar el redimensionamiento de la ventana
 const handleResize = () => {
-  if (dataStatus.value.allReady) {
+  // Solo actualizar si ambos gráficos están listos para evitar errores al redimensionar antes de la carga inicial
+  if (dataStatus.value.bomba1Ready || dataStatus.value.bomba2Ready) {
     actualizarGraficos();
   }
 };
-
-// Observar cambios en predicciones para actualizar gráficos
-watch(
-  predicciones,
-  (nuevosPredicciones) => {
-    if (nuevosPredicciones && nuevosPredicciones.length) {
-      nextTick(() => actualizarGraficos());
-    }
-  },
-  { deep: true }
-);
 
 // Agregar un indicador para rastrear si el componente está montado
 const componenteMontado = ref(false);
@@ -1150,23 +1072,22 @@ const componenteMontado = ref(false);
 onMounted(() => {
   if (process.client) {
     console.log('Componente montado');
-    
-    // Marcar el componente como montado
     componenteMontado.value = true;
     
-    // Forzar inicialización de bomba2Listo 
-    bomba2Listo.value = true;
-    
-    // Primera inicialización de gráficos
-    actualizarGraficos();
+    // Primera inicialización de gráficos después de un pequeño retraso
+    // para asegurar que los canvas estén renderizados.
+    setTimeout(() => {
+      actualizarGraficos();
+    }, 100); 
     
     // Configurar un intervalo de verificación para asegurar que los gráficos se rendericen
+    // Esto es una medida de seguridad, en un entorno ideal, los watchers y nextTick
+    // deberían ser suficientes.
     const intervaloVerificacion = setInterval(() => {
-      if (graficoListo.value && !charts.bomba1Chart) {
+      if ((graficoListo.value && !charts.bomba1Chart) || (bomba2Listo.value && !charts.bomba2Chart)) {
         console.log('Forzando renderización del gráfico después de verificación');
         actualizarGraficos();
-      } else if (charts.bomba1Chart) {
-        // Limpiar el intervalo una vez que el gráfico se haya renderizado
+      } else if (charts.bomba1Chart && charts.bomba2Chart) {
         clearInterval(intervaloVerificacion);
       }
     }, 1000);
@@ -1190,6 +1111,5 @@ onUnmounted(() => {
     });
   }
 });
-
-
 </script>
+
