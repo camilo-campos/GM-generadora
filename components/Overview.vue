@@ -408,32 +408,13 @@
           class="text-base sm:text-lg font-medium"
           :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
         >
-          Bomba 1 - Estado Operativo
+          Bomba A
         </h3>
-        <div class="flex items-center space-x-2">
-          <div class="flex items-center">
-            <div class="w-3 h-3 rounded-full bg-green-500 mr-1"></div>
-            <span class="text-xs text-gray-600">Operativa</span>
-          </div>
-        </div>
       </div>
 
-      <div class="flex flex-col lg:flex-row items-center">
-        <div class="w-full lg:w-3/4 h-48 sm:h-72">
+      <div class="flex flex-col items-center">
+        <div class="w-full h-48 sm:h-72">
           <canvas ref="bomba1Canvas"></canvas>
-        </div>
-        <div class="w-full lg:w-1/4 mt-4 lg:mt-0 lg:pl-4">
-          <div class="space-y-3">
-            <div
-              v-for="(item, index) in bomba1Stats"
-              :key="index"
-              class="flex items-center justify-between p-2 rounded-md"
-              :class="item.bgColor"
-            >
-              <span class="text-sm font-medium">{{ item.label }}</span>
-              <span class="text-sm font-bold">{{ item.value }}</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -469,32 +450,13 @@
           class="text-base sm:text-lg font-medium"
           :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
         >
-          Bomba 2 - Rendimiento
+          Bomba B
         </h3>
-        <div class="flex items-center space-x-2">
-          <div class="flex items-center">
-            <div class="w-3 h-3 rounded-full bg-yellow-500 mr-1"></div>
-            <span class="text-xs text-gray-600">Mantenimiento</span>
-          </div>
-        </div>
       </div>
 
-      <div class="flex flex-col lg:flex-row items-center">
-        <div class="w-full lg:w-3/4 h-48 sm:h-72">
+      <div class="flex flex-col items-center">
+        <div class="w-full h-48 sm:h-72">
           <canvas ref="bomba2Canvas"></canvas>
-        </div>
-        <div class="w-full lg:w-1/4 mt-4 lg:mt-0 lg:pl-4">
-          <div class="space-y-3">
-            <div
-              v-for="(item, index) in bomba2Stats"
-              :key="index"
-              class="flex items-center justify-between p-2 rounded-md"
-              :class="item.bgColor"
-            >
-              <span class="text-sm font-medium">{{ item.label }}</span>
-              <span class="text-sm font-bold">{{ item.value }}</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -687,7 +649,7 @@ const props = defineProps({
 
 // Observar cambios en el tema para actualizar los gráficos
 watch(() => props.isDarkMode, (newValue) => {
-  console.log('Tema cambiado a:', newValue ? 'oscuro' : 'claro');
+
   // Actualizar los gráficos cuando cambia el tema
   // Un pequeño retraso para asegurar que Vue haya actualizado el DOM si es necesario
   setTimeout(() => {
@@ -699,8 +661,7 @@ watch(() => props.isDarkMode, (newValue) => {
 const { predicciones, isLoadingPredicciones, errorPredicciones } = usePrediccionesBombaA();
 const { prediccionesBombab, isLoadingPrediccionesBombab, errorPrediccionesBombab } = usePrediccionesBombab();
 
-console.log("Predicciones Bomba A:", predicciones.value);
-console.log("Predicciones Bomba B:", prediccionesBombab.value);
+
 
 const bomba1Canvas = ref(null);
 const bomba2Canvas = ref(null);
@@ -754,18 +715,6 @@ const bomba2Data = computed(() => ({
 
 // Propiedad computada para verificar estados de carga
 const dataStatus = computed(() => {
-  // Para debug
-  if (process.client) {
-    console.log('Estado de carga:', { 
-      isLoadingPredicciones: isLoadingPredicciones.value,
-      isLoadingPrediccionesBombab: isLoadingPrediccionesBombab.value,
-      graficoListo: graficoListo.value,
-      bomba2Listo: bomba2Listo.value,
-      tienePredicciones: !!predicciones.value?.length,
-      tienePrediccionesBombab: !!prediccionesBombab.value?.length
-    });
-  }
-  
   return {
     bomba1Ready: !isLoadingPredicciones.value && graficoListo.value,
     bomba2Ready: !isLoadingPrediccionesBombab.value && bomba2Listo.value,
@@ -780,14 +729,11 @@ watch(
   predicciones,
   (nuevoValor) => {
     if (process.client) {
-      console.log('watch predicciones Bomba A:', { 
-        nuevoValor,
-        tieneNuevosDatos: nuevoValor?.length > 0
-      });
+
       
       if (nuevoValor && Array.isArray(nuevoValor) && nuevoValor.length > 0) {
         graficoListo.value = true;
-        console.log('Datos de Bomba A actualizados y listos!');
+
         nextTick(() => actualizarGraficos());
       } else {
         graficoListo.value = false;
@@ -802,14 +748,11 @@ watch(
   prediccionesBombab,
   (nuevoValor) => {
     if (process.client) {
-      console.log('watch predicciones Bomba B:', { 
-        nuevoValor,
-        tieneNuevosDatos: nuevoValor?.length > 0
-      });
+
       
       if (nuevoValor && Array.isArray(nuevoValor) && nuevoValor.length > 0) {
         bomba2Listo.value = true;
-        console.log('Datos de Bomba B actualizados y listos!');
+
         nextTick(() => actualizarGraficos());
       } else {
         bomba2Listo.value = false;
@@ -820,51 +763,7 @@ watch(
 );
 
 // Estadísticas para Bomba 1
-const bomba1Stats = ref([
-  { label: "Tasa de Fallas Promedio", value: "23%", bgColor: "bg-yellow-50" },
-  { label: "Pico de Fallas", value: "89%", bgColor: "bg-red-50" },
-  { label: "Tiempo sin Fallas", value: "87%", bgColor: "bg-green-50" },
-  { label: "Estabilidad", value: "Media", bgColor: "bg-yellow-100" },
-]);
 
-// Estadísticas para Bomba 2
-const bomba2Stats = ref([
-  { label: "Tasa de Fallas Promedio", value: "42%", bgColor: "bg-red-50" },
-  { label: "Pico de Fallas", value: "95%", bgColor: "bg-red-50" },
-  { label: "Tiempo sin Fallas", value: "58%", bgColor: "bg-yellow-50" },
-  { label: "Estabilidad", value: "Baja", bgColor: "bg-red-100" },
-]);
-
-// Ejemplo de datos para las tarjetas
-const stats = [
-  {
-    name: "Presión Actual",
-    value: "42",
-    change: "8%",
-    trend: "up",
-    icon: "SignalIcon",
-    darkBgColor: "p-2 sm:p-3 rounded-full bg-[#333333] text-white",
-    lightBgColor: "p-2 sm:p-3 rounded-full bg-[#E9ECEF] text-[#495057]",
-  },
-  {
-    name: "Temperatura",
-    value: "0.8%",
-    change: "3%",
-    trend: "down",
-    icon: "ExclamationTriangleIcon",
-    darkBgColor: "p-2 sm:p-3 rounded-full bg-[#B1B1B1] text-white",
-    lightBgColor: "p-2 sm:p-3 rounded-full bg-[#FFF9DB] text-[#E67700]",
-  },
-  {
-    name: "Nivel de Vibración",
-    value: "0.8%",
-    change: "3%",
-    trend: "down",
-    icon: "ExclamationTriangleIcon",
-    darkBgColor: "p-2 sm:p-3 rounded-full bg-[#B1B1B1] text-white",
-    lightBgColor: "p-2 sm:p-3 rounded-full bg-[#FFF9DB] text-[#E67700]",
-  },
-];
 
 // Objetos para almacenar las instancias de los gráficos
 let charts = {
@@ -960,14 +859,7 @@ const actualizarGraficos = async () => {
   
   await nextTick();
   
-  console.log('Actualizando gráficos...', {
-    tieneCanvasBomba1: !!bomba1Canvas.value,
-    graficoListo: graficoListo.value,
-    datosDisponiblesBomba1: bomba1Data.value.datasets[0].data.length > 0,
-    tieneCanvasBomba2: !!bomba2Canvas.value,
-    bomba2Listo: bomba2Listo.value,
-    datosDisponiblesBomba2: bomba2Data.value.datasets[0].data.length > 0
-  });
+
   
   // Actualizar gráfico principal (si existe y es relevante)
   const canvas = document.getElementById("anomalyChart");
@@ -1001,15 +893,12 @@ const actualizarGraficos = async () => {
         data: bomba1Data.value, // Ahora bomba1Data es una computed, se actualizará automáticamente
         options: getChartOptions(props.isDarkMode), // Usar las opciones comunes y el tema
       });
-      console.log('Gráfico de Bomba 1 creado exitosamente');
+
     } catch (error) {
       console.error('Error al crear el gráfico de Bomba 1:', error);
     }
   } else {
-    console.log('No se puede crear gráfico de Bomba 1:', {
-      tieneCanvas: !!bomba1Canvas.value,
-      graficoListo: graficoListo.value
-    });
+
   }
   
   // Actualizar gráfico de Bomba 2
@@ -1023,22 +912,18 @@ const actualizarGraficos = async () => {
         data: bomba2Data.value, // Ahora bomba2Data es una computed, se actualizará automáticamente
         options: getChartOptions(props.isDarkMode), // Usar las opciones comunes y el tema
       });
-      console.log('Gráfico de Bomba 2 creado exitosamente');
+
     } catch (error) {
       console.error('Error al crear el gráfico de Bomba 2:', error);
     }
   } else {
-    console.log('No se puede crear gráfico de Bomba 2:', {
-      tieneCanvas: !!bomba2Canvas.value,
-      bomba2Listo: bomba2Listo.value,
-      isLoadingPrediccionesBombab: isLoadingPrediccionesBombab.value // Para depuración
-    });
+
   }
 };
 
 // Botón para refrescar manualmente los datos y gráficos
 const refrescarDatos = async () => {
-  console.log('Refrescando datos manualmente...');
+
   
   // Forzar refetch si usas TanStack Query (si tus composables lo exponen)
   // if (typeof refetchPredicciones === 'function') {
@@ -1055,7 +940,7 @@ const refrescarDatos = async () => {
   // Regenerar gráficos
   await actualizarGraficos();
   
-  console.log('Datos refrescados manualmente.');
+
 };
 
 // Manejar el redimensionamiento de la ventana
@@ -1071,7 +956,7 @@ const componenteMontado = ref(false);
 
 onMounted(() => {
   if (process.client) {
-    console.log('Componente montado');
+
     componenteMontado.value = true;
     
     // Primera inicialización de gráficos después de un pequeño retraso
@@ -1085,7 +970,7 @@ onMounted(() => {
     // deberían ser suficientes.
     const intervaloVerificacion = setInterval(() => {
       if ((graficoListo.value && !charts.bomba1Chart) || (bomba2Listo.value && !charts.bomba2Chart)) {
-        console.log('Forzando renderización del gráfico después de verificación');
+
         actualizarGraficos();
       } else if (charts.bomba1Chart && charts.bomba2Chart) {
         clearInterval(intervaloVerificacion);

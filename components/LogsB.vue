@@ -33,10 +33,14 @@
               <div
                 v-for="(item, index) in clasificacionStats"
                 :key="index"
-                @mouseover="highlightSegment(index, 'clasificacion')"
-                @mouseleave="resetHighlight('clasificacion')"
+                @mouseover="hoveredItem = {type: 'clasificacion', index}"
+                @mouseleave="hoveredItem = null"
+                :class="{'ring-2 ring-offset-2': hoveredItem && hoveredItem.type === 'clasificacion' && hoveredItem.index === index}"
+                :style="{
+                  backgroundColor: item.bgColor + '20',
+                  ringColor: item.bgColor
+                }"
                 class="flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-200 hover:transform hover:scale-105"
-                :style="{ backgroundColor: item.bgColor + '20' }"
               >
                 <div class="flex items-center">
                   <div
@@ -86,10 +90,14 @@
               <div
                 v-for="(item, index) in errorStats"
                 :key="index"
-                @mouseover="highlightSegment(index, 'error')"
-                @mouseleave="resetHighlight('error')"
+                @mouseover="hoveredItem = {type: 'error', index}"
+                @mouseleave="hoveredItem = null"
+                :class="{'ring-2 ring-offset-2': hoveredItem && hoveredItem.type === 'error' && hoveredItem.index === index}"
+                :style="{
+                  backgroundColor: item.bgColor + '20',
+                  ringColor: item.bgColor
+                }"
                 class="flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-200 hover:transform hover:scale-105"
-                :style="{ backgroundColor: item.bgColor + '20' }"
               >
                 <div class="flex items-center">
                   <div
@@ -139,10 +147,14 @@
               <div
                 v-for="(item, index) in alertaAvisoStats"
                 :key="index"
-                @mouseover="highlightSegment(index, 'alerta')"
-                @mouseleave="resetHighlight('alerta')"
+                @mouseover="hoveredItem = {type: 'alerta', index}"
+                @mouseleave="hoveredItem = null"
+                :class="{'ring-2 ring-offset-2': hoveredItem && hoveredItem.type === 'alerta' && hoveredItem.index === index}"
+                :style="{
+                  backgroundColor: item.bgColor + '20',
+                  ringColor: item.bgColor
+                }"
                 class="flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-200 hover:transform hover:scale-105"
-                :style="{ backgroundColor: item.bgColor + '20' }"
               >
                 <div class="flex items-center">
                   <div
@@ -578,94 +590,8 @@ const toggleChartType = () => {
 };
 
 // Resaltar segmento al pasar el mouse sobre la leyenda
-const highlightSegment = (index, chartType) => {
-  // Solo ejecutar si los gráficos están listos para interactuar
-  if (!chartsReady.value) {
-    console.log('Gráficos no listos para interactuar, ignorando highlightSegment');
-    return;
-  }
-  
-  try {
-    let chart;
-    switch(chartType) {
-      case 'clasificacion':
-        chart = clasificacionChart.value;
-        break;
-      case 'error':
-        chart = hrsgSubChart.value;
-        break;
-      case 'alerta':
-        chart = alertaAvisoChart.value;
-        break;
-    }
-    
-    // Verificar que el gráfico existe y está correctamente inicializado
-    if (chart && chart.data && chart.data.datasets && chart.data.datasets[0]) {
-      const dataset = chart.data.datasets[0];
-      
-      // Verificar que backgroundColor existe y es un array
-      if (dataset.backgroundColor && Array.isArray(dataset.backgroundColor)) {
-        const backgroundColors = [...dataset.backgroundColor];
-        
-        // Hacer transparentes todos excepto el seleccionado
-        const newColors = backgroundColors.map((color, i) => 
-          i === index ? color : color + '80'
-        );
-        
-        dataset.backgroundColor = newColors;
-        
-        // Verificar que el método update existe antes de llamarlo
-        if (typeof chart.update === 'function') {
-          chart.update('none'); // Actualizar sin animación
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Error al resaltar segmento:', error);
-  }
-};
-
-// Restaurar colores originales
-const resetHighlight = (chartType) => {
-  // Solo ejecutar si los gráficos están listos para interactuar
-  if (!chartsReady.value) {
-    console.log('Gráficos no listos para interactuar, ignorando resetHighlight');
-    return;
-  }
-  
-  try {
-    let chart, colors;
-    switch(chartType) {
-      case 'clasificacion':
-        chart = clasificacionChart.value;
-        colors = clasificacionStats.value.map(stat => stat.bgColor);
-        break;
-      case 'error':
-        chart = hrsgSubChart.value;
-        colors = errorStats.value.map(stat => stat.bgColor);
-        break;
-      case 'alerta':
-        chart = alertaAvisoChart.value;
-        colors = alertaAvisoStats.value.map(stat => stat.bgColor);
-        break;
-    }
-    
-    // Verificar que el gráfico existe y está correctamente inicializado
-    if (chart && chart.data && chart.data.datasets && chart.data.datasets[0]) {
-      // Verificar que colors es un array válido
-      if (colors && Array.isArray(colors)) {
-        chart.data.datasets[0].backgroundColor = colors;
-        
-        // Verificar que el método update existe antes de llamarlo
-        if (typeof chart.update === 'function') {
-          chart.update('none');
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Error al restaurar colores originales:', error);
-  }
-};
+// Variable reactiva para el elemento sobre el que está el ratón
+const hoveredItem = ref(null);
 
 // Actualizar gráficos cuando la data (bitacoras) esté disponible
 watch(bitacoras, (newVal) => {

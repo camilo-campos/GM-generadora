@@ -1,5 +1,25 @@
 <template>
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-6" :class="props.isDarkMode ? 'bg-gray-900' : 'bg-gray-100'">
+  <!-- Botón para alternar entre vista de gráficos e iframe (ahora en la parte superior) -->
+  <div class="flex justify-end p-4" :class="props.isDarkMode ? 'bg-gray-900' : 'bg-gray-100'">
+    <button 
+      @click="toggleIframeView"
+      class="flex items-center gap-2 py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out"
+      :class="isIframeView 
+        ? props.isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-500 text-white hover:bg-red-600' 
+        : props.isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600'"
+    >
+      <svg v-if="!isIframeView" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+      </svg>
+      <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+      {{ isIframeView ? 'Volver a gráficos' : 'Ver dashboard externo' }}
+    </button>
+  </div>
+  
+  <!-- Botones de sensores (se ocultan cuando iframe está activo) -->
+  <div v-show="!isIframeView" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 p-6" :class="props.isDarkMode ? 'bg-gray-900' : 'bg-gray-100'">
     <!-- Botones de visibilidad con indicador de estado activo - Sensores originales -->
     <button 
       @click="corriente_visible = !corriente_visible" 
@@ -263,10 +283,11 @@
     </button>
   </div>
 
-  <div class="p-4" :class="props.isDarkMode ? 'bg-gray-900' : 'bg-gray-100'">
-    <div class="flex flex-wrap gap-2 mb-4">
-      <div class="text-sm font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Gráficos activos:</div>
+  <div v-show="!isIframeView" class="p-4" :class="props.isDarkMode ? 'bg-gray-900' : 'bg-gray-100'">
+    <div class="flex justify-between items-center mb-4">
       <div class="flex flex-wrap gap-2">
+        <div class="text-sm font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Gráficos activos:</div>
+        <div class="flex flex-wrap gap-2">
         <!-- Etiquetas sensores originales -->
         <span v-if="corriente_visible" class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Corriente</span>
         <span v-if="salidaAgua_visible" class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Salida de Agua</span>
@@ -290,7 +311,9 @@
         <span v-if="presionSuccionBAA_visible" class="px-2 py-1 text-xs bg-violet-100 text-violet-800 rounded-full">Presión Succión BAA</span>
         <span v-if="temperaturaEstator_visible" class="px-2 py-1 text-xs bg-amber-100 text-amber-800 rounded-full">Temp. Estator</span>
         <span v-if="flujoSalida12FPMFC_visible" class="px-2 py-1 text-xs bg-lime-100 text-lime-800 rounded-full">Flujo Salida 12FPMFC</span>
+        </div>
       </div>
+      <!-- Ya no necesitamos el botón aquí, se movió arriba -->
     </div>
   </div>
 
@@ -298,52 +321,30 @@
     Cargando gráficos, por favor espere...
   </div>
   
-  <div v-show="!isLoading" class="flex flex-col gap-6 mb-6">
+  <!-- Vista de iframe en pantalla completa cuando isIframeView es true -->
+  <div v-if="isIframeView" class="w-full" style="height: calc(100vh - 130px);">
+    <iframe 
+      :src="iframeUrl" 
+      class="w-full h-full border-0" 
+      title="Dashboard externo"
+      allowfullscreen
+      loading="lazy">
+    </iframe>
+  </div>
+
+  <!-- Vista normal de gráficos cuando isIframeView es false -->
+  <div v-show="!isLoading && !isIframeView" class="flex flex-col gap-6 mb-6">
     <!-- Gráficos (sin cambios) -->
     <div v-show="corriente_visible" class="grafico w-full rounded-lg shadow p-4 sm:p-6" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
       <div class="mb-4">
         <div class="flex justify-center mb-2">
           <h2 class="text-lg font-semibold" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-800'">Corriente</h2>
         </div>
-        <div class="flex justify-end">
-          <button 
-            @click="toggleCorrienteView"
-            class="flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
-            :class="corrienteViewMode === 'basic' 
-              ? props.isDarkMode ? 'bg-blue-900 text-blue-200 hover:bg-blue-800' : 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
-              : props.isDarkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-          >
-            <svg v-if="corrienteViewMode === 'basic'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-            </svg>
-            {{ corrienteViewMode === 'basic' ? 'Ver análisis detallado' : 'Volver al gráfico básico' }}
-          </button>
-        </div>
       </div>
       
-      <!-- Contenedor principal solo visible en modo básico o loading -->
-      <div v-if="corrienteViewMode !== 'detailed'" class="w-full h-[300px] relative transition-all duration-300">
-        <!-- Gráfico básico -->
-        <div v-if="corrienteViewMode === 'basic'" class="w-full h-full">
-          <canvas ref="corrienteCanvas"></canvas>
-        </div>
-        
-        <!-- Animación de carga mientras se obtienen los rangos de fechas -->
-        <div v-if="corrienteViewMode === 'loading'" class="absolute inset-0 flex items-center justify-center" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
-          <div class="flex flex-col items-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mb-3"></div>
-            <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo datos del sensor...</p>
-            <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando rangos de fechas disponibles</p>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Tarjeta de análisis detallado -->
-      <div v-if="corrienteViewMode === 'detailed'" class="transition-all duration-300">
-        <AnalisisCorrienteDetallado :datos="corriente" :rangoFechas="rangoFechasCorriente" />
+      <!-- Gráfico básico -->
+      <div class="w-full h-[300px]">
+        <canvas ref="corrienteCanvas"></canvas>
       </div>
     </div>
     
@@ -487,13 +488,154 @@
 import { ref, onMounted, watch, nextTick, computed, onUnmounted, reactive } from "vue";
 import { Chart, registerables } from "chart.js";
 import { useSensores } from "@/composables/useSensores";
-import AnalisisCorrienteDetallado from "./AnalisisCorrienteDetallado.vue";
 import AnalisisSalidaAgua from "./AnalisisSalidaAgua.vue";
 
 
 Chart.register(...registerables);
 
 
+
+// Control de vista de iframe
+const isIframeView = ref(false);
+const iframeUrl = ref('https://app.powerbi.com/view?r=eyJrIjoiZDRjMjdhOGYtOTZiNS00NDU5LWFhN2UtMzFkMmRkMzE0NWEwIiwidCI6ImNmODVkMDQ4LTdkNmQtNDk3Yi1hOWRlLWY1MTllZDYzODViNCJ9');
+
+// Estado para guardar qué gráficos estaban activos antes de mostrar el iframe
+const activeChartsBeforeIframe = reactive({
+  corriente: false,
+  salidaAgua: false,
+  presionAgua: false,
+  generacionGas: false,
+  temperaturaAbiente: false,
+  temperaturaDescansoBomba1A: false,
+  temperaturaDescansoMotorBomba: false,
+  temperaturaInternaEmpuje: false,
+  vibracionAxial: false,
+  voltajeBarra: false,
+  excentricidadBomba: false,
+  flujoAguaDomoAP: false,
+  flujoAguaDomoMP: false,
+  flujoAguaRecalentador: false,
+  flujoAguaVaporAlta: false,
+  posicionValvulaRecirc: false,
+  presionAguaMP: false,
+  presionSuccionBAA: false,
+  temperaturaEstator: false,
+  flujoSalida12FPMFC: false
+});
+
+// Función para alternar entre vista de gráficos e iframe
+const toggleIframeView = () => {
+  // Si estamos volviendo a la vista de gráficos
+  if (isIframeView.value) {
+    isIframeView.value = false;
+    
+    // Restauramos los gráficos que estaban activos
+    restoreActiveCharts();
+    
+    // Si ningún gráfico estaba activo antes, activamos al menos el gráfico de corriente
+    const anyChartActive = Object.values(activeChartsBeforeIframe).some(value => value);
+    if (!anyChartActive) {
+      corriente_visible.value = true;
+    }
+    
+    // Aseguramos que los gráficos se actualicen correctamente
+    nextTick(() => {
+      actualizarGraficos();
+    });
+    
+    return;
+  }
+  
+  // Si vamos a mostrar el iframe, primero guardamos el estado de los gráficos activos
+  saveActiveCharts();
+  
+  // Desactivamos todos los gráficos
+  hideAllCharts();
+  
+  // Activamos la vista de iframe
+  isIframeView.value = true;
+};
+
+// Función para guardar el estado de los gráficos activos
+const saveActiveCharts = () => {
+  // Sensores originales
+  activeChartsBeforeIframe.corriente = corriente_visible.value;
+  activeChartsBeforeIframe.salidaAgua = salidaAgua_visible.value;
+  activeChartsBeforeIframe.presionAgua = presionAgua_visible.value;
+  activeChartsBeforeIframe.generacionGas = generacionGas_visible.value;
+  activeChartsBeforeIframe.temperaturaAbiente = temperaturaAbiente_visible.value;
+  activeChartsBeforeIframe.temperaturaDescansoBomba1A = temperaturaDescansoBomba1A_visible.value;
+  activeChartsBeforeIframe.temperaturaDescansoMotorBomba = temperaturaDescansoMotorBomba_visible.value;
+  activeChartsBeforeIframe.temperaturaInternaEmpuje = temperaturaInternaEmpuje_visible.value;
+  activeChartsBeforeIframe.vibracionAxial = vibracionAxial_visible.value;
+  activeChartsBeforeIframe.voltajeBarra = voltajeBarra_visible.value;
+  
+  // Nuevos sensores
+  activeChartsBeforeIframe.excentricidadBomba = excentricidadBomba_visible.value;
+  activeChartsBeforeIframe.flujoAguaDomoAP = flujoAguaDomoAP_visible.value;
+  activeChartsBeforeIframe.flujoAguaDomoMP = flujoAguaDomoMP_visible.value;
+  activeChartsBeforeIframe.flujoAguaRecalentador = flujoAguaRecalentador_visible.value;
+  activeChartsBeforeIframe.flujoAguaVaporAlta = flujoAguaVaporAlta_visible.value;
+  activeChartsBeforeIframe.posicionValvulaRecirc = posicionValvulaRecirc_visible.value;
+  activeChartsBeforeIframe.presionAguaMP = presionAguaMP_visible.value;
+  activeChartsBeforeIframe.presionSuccionBAA = presionSuccionBAA_visible.value;
+  activeChartsBeforeIframe.temperaturaEstator = temperaturaEstator_visible.value;
+  activeChartsBeforeIframe.flujoSalida12FPMFC = flujoSalida12FPMFC_visible.value;
+};
+
+// Función para restaurar los gráficos activos
+const restoreActiveCharts = () => {
+  // Sensores originales
+  corriente_visible.value = activeChartsBeforeIframe.corriente;
+  salidaAgua_visible.value = activeChartsBeforeIframe.salidaAgua;
+  presionAgua_visible.value = activeChartsBeforeIframe.presionAgua;
+  generacionGas_visible.value = activeChartsBeforeIframe.generacionGas;
+  temperaturaAbiente_visible.value = activeChartsBeforeIframe.temperaturaAbiente;
+  temperaturaDescansoBomba1A_visible.value = activeChartsBeforeIframe.temperaturaDescansoBomba1A;
+  temperaturaDescansoMotorBomba_visible.value = activeChartsBeforeIframe.temperaturaDescansoMotorBomba;
+  temperaturaInternaEmpuje_visible.value = activeChartsBeforeIframe.temperaturaInternaEmpuje;
+  vibracionAxial_visible.value = activeChartsBeforeIframe.vibracionAxial;
+  voltajeBarra_visible.value = activeChartsBeforeIframe.voltajeBarra;
+  
+  // Nuevos sensores
+  excentricidadBomba_visible.value = activeChartsBeforeIframe.excentricidadBomba;
+  flujoAguaDomoAP_visible.value = activeChartsBeforeIframe.flujoAguaDomoAP;
+  flujoAguaDomoMP_visible.value = activeChartsBeforeIframe.flujoAguaDomoMP;
+  flujoAguaRecalentador_visible.value = activeChartsBeforeIframe.flujoAguaRecalentador;
+  flujoAguaVaporAlta_visible.value = activeChartsBeforeIframe.flujoAguaVaporAlta;
+  posicionValvulaRecirc_visible.value = activeChartsBeforeIframe.posicionValvulaRecirc;
+  presionAguaMP_visible.value = activeChartsBeforeIframe.presionAguaMP;
+  presionSuccionBAA_visible.value = activeChartsBeforeIframe.presionSuccionBAA;
+  temperaturaEstator_visible.value = activeChartsBeforeIframe.temperaturaEstator;
+  flujoSalida12FPMFC_visible.value = activeChartsBeforeIframe.flujoSalida12FPMFC;
+};
+
+// Función para desactivar todos los gráficos
+const hideAllCharts = () => {
+  // Sensores originales
+  corriente_visible.value = false;
+  salidaAgua_visible.value = false;
+  presionAgua_visible.value = false;
+  generacionGas_visible.value = false;
+  temperaturaAbiente_visible.value = false;
+  temperaturaDescansoBomba1A_visible.value = false;
+  temperaturaDescansoMotorBomba_visible.value = false;
+  temperaturaInternaEmpuje_visible.value = false;
+  vibracionAxial_visible.value = false;
+  voltajeBarra_visible.value = false;
+  
+  // Nuevos sensores
+  excentricidadBomba_visible.value = false;
+  flujoAguaDomoAP_visible.value = false;
+  flujoAguaDomoMP_visible.value = false;
+  flujoAguaRecalentador_visible.value = false;
+  flujoAguaVaporAlta_visible.value = false;
+  posicionValvulaRecirc_visible.value = false;
+  presionAguaMP_visible.value = false;
+  presionSuccionBAA_visible.value = false;
+  temperaturaEstator_visible.value = false;
+  flujoSalida12FPMFC_visible.value = false;
+};
 
 // Visibilidad por gráfico - Sensores originales
 const corriente_visible = ref(true);
@@ -519,68 +661,7 @@ const presionSuccionBAA_visible = ref(false);
 const temperaturaEstator_visible = ref(false);
 const flujoSalida12FPMFC_visible = ref(false);
 
-// Control de modo de visualización para corriente (básico o detallado)
-const corrienteViewMode = ref('basic'); // Valores posibles: 'basic', 'loading' o 'detailed'
-const rangoFechasCorriente = ref(null); // Almacena el rango de fechas obtenido del backend
 
-// Función para alternar entre vista básica y detallada de corriente
-const toggleCorrienteView = async () => {
-  // Si estamos en modo básico, mostrar animación de carga y obtener datos
-  if (corrienteViewMode.value === 'basic') {
-    corrienteViewMode.value = 'loading';
-    
-    try {
-      // Obtener rango de fechas del sensor de corriente desde el backend
-      // Nota: Temporalmente usamos los datos locales mientras se arregla el endpoint
-      try {
-        const response = await fetch('https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores/corriente/rango');
-        
-        if (!response.ok) {
-          throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log('Rango de fechas obtenido:', data);
-        
-        // Verificar si la respuesta tiene las propiedades esperadas
-        if (!data || (!data.inicio && !data.termino)) {
-          console.warn('El backend devolvió un objeto sin las propiedades esperadas');
-          // Usar datos de ejemplo mientras se arregla el endpoint
-          rangoFechasCorriente.value = {
-            inicio: '2023-01-01',
-            termino: '2023-12-31'
-          };
-        } else {
-          // Almacenar el rango de fechas del backend
-          rangoFechasCorriente.value = data;
-        }
-      } catch (error) {
-        console.error('Error al obtener rango de fechas del backend:', error);
-        // Usar datos de ejemplo en caso de error
-        rangoFechasCorriente.value = {
-          inicio: '2023-01-01',
-          termino: '2023-12-31'
-        };
-      }
-      
-      // Cambiar a modo detallado
-      corrienteViewMode.value = 'detailed';
-    } catch (error) {
-      console.error('Error al obtener rango de fechas:', error);
-      alert(`Error al obtener rango de fechas: ${error.message}`);
-      // Volver al modo básico en caso de error
-      corrienteViewMode.value = 'basic';
-    }
-  } else {
-    // Si estamos en modo detallado, volver al básico
-    corrienteViewMode.value = 'basic';
-    
-    // Asegurarnos de que el gráfico se actualice
-    nextTick(() => {
-      crearGrafico(corrienteCanvas.value, corriente, "corriente");
-    });
-  }
-};
 
 
 
