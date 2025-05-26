@@ -18,10 +18,14 @@ const error = ref(null)
 onMounted(async () => {
   try {
     if (route.query.code) {
+      // El método handleCallback ya implementa la redirección al dashboard
+      // por lo que no necesitamos hacer navigateTo aquí
       await $auth.handleCallback(route.query.code)
-      navigateTo('/test')
+      // La redirección se maneja en auth.js
+      const router = useRouter()
+      router.push('/')
     } else {
-      error.value = 'No authorization code received'
+      error.value = 'No se recibió código de autorización'
     }
   } catch (err) {
     console.error('Authentication error:', err)

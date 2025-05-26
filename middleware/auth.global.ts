@@ -1,6 +1,6 @@
 // middleware/auth.global.ts
 export default defineNuxtRouteMiddleware((to) => {
-  const publicRoutes = ['/login', '/callback', '/'];
+  const publicRoutes = ['/login', '/callback'];
   const { $auth } = useNuxtApp();
   
   // Si la ruta no es pública y el usuario no está autenticado
