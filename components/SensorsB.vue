@@ -436,14 +436,14 @@
 import { ref, onMounted, watch, nextTick, computed, onUnmounted, reactive } from "vue";
 import { Chart, registerables } from "chart.js";
 import { useSensoresB } from "~/composables/useSensores_b";
-import AnalisisSalidaAgua from "./AnalisisSalidaAgua.vue";
+
 
 
 Chart.register(...registerables);
 
 // Control de vista de iframe
 const isIframeView = ref(false);
-const iframeUrl = ref('https://app.powerbi.com/view?r=eyJrIjoiZDRjMjdhOGYtOTZiNS00NDU5LWFhN2UtMzFkMmRkMzE0NWEwIiwidCI6ImNmODVkMDQ4LTdkNmQtNDk3Yi1hOWRlLWY1MTllZDYzODViNCJ9');
+const iframeUrl = ref('https://app.powerbi.com/view?r=eyJrIjoiZWVlMDY0OTAtMDgzNy00YjBlLWJiNTgtMWYxNTZmYTVkM2FiIiwidCI6ImRkNzcxMmUzLWRkZjQtNDNkMy04YjhlLTYzNjc3NjIyYzc3OSIsImMiOjR9');
 
 // Estado para guardar qué gráficos estaban activos antes de mostrar el iframe
 const activeChartsBeforeIframe = reactive({
@@ -681,13 +681,14 @@ let charts = {
 // RANGOS personalizados por gráfico
 const rangos = reactive({
   // Sensores originales
-  corriente: { min: -0.40, max: -0.38 },
-  flujoDescarga: { min: -10, max: 50 },
-  presionAgua: { min: -1.97, max: 22.02 },
-  temperaturaAmbiental: { min: -10, max: 23.10 },
-  vibracionXDescanso: { min: -0.41 , max: -0.39 },
-  vibracionYDescanso: { min: -0.41 , max: -0.39 },
-  voltajeBarra: { min: -6431.91, max: 6779.75 },
+  //-0.57421875
+  corriente: { min: undefined, max: undefined },
+  flujoDescarga: { min: undefined, max: undefined },
+  presionAgua: { min: undefined, max: undefined },
+  temperaturaAmbiental: { min: undefined, max:undefined },
+  vibracionXDescanso: { min:  undefined, max:  undefined},
+  vibracionYDescanso: { min:  undefined, max: undefined },
+  voltajeBarra: { min: undefined, max: undefined },
   // Nuevos sensores (rangos iniciales, ajustar según datos reales)
   excentricidadBomba: { min: undefined, max: undefined },
   flujoAguaDomoAP: { min: undefined, max: undefined },

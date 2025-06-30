@@ -497,7 +497,7 @@ Chart.register(...registerables);
 
 // Control de vista de iframe
 const isIframeView = ref(false);
-const iframeUrl = ref('https://app.powerbi.com/view?r=eyJrIjoiZDRjMjdhOGYtOTZiNS00NDU5LWFhN2UtMzFkMmRkMzE0NWEwIiwidCI6ImNmODVkMDQ4LTdkNmQtNDk3Yi1hOWRlLWY1MTllZDYzODViNCJ9');
+const iframeUrl = ref('https://app.powerbi.com/view?r=eyJrIjoiZWU2MGJjYjgtM2I2NS00NzA1LThlNDctNmZhOTc4ZWQyZTgwIiwidCI6ImRkNzcxMmUzLWRkZjQtNDNkMy04YjhlLTYzNjc3NjIyYzc3OSIsImMiOjR9');
 
 // Estado para guardar qué gráficos estaban activos antes de mostrar el iframe
 const activeChartsBeforeIframe = reactive({
@@ -747,16 +747,16 @@ let charts = {
 // RANGOS personalizados por gráfico
 const rangos = reactive({
   // Sensores originales
-  corriente: { min: -0.40, max: -0.38 },
-  salidaAgua: { min: -10, max: 50 },
-  presionAgua: { min: 1.97, max: 2.02 },
-  generacionGas: { min: 0, max: 0 },
-  temperaturaAbiente: { min: 16.20, max: 23.10 },
-  temperaturaDescansoBomba1A: { min: 31.22, max: 33.56 },
-  temperaturaDescansoMotorBomba: { min: 22.10 , max: 25.13 },
-  temperaturaInternaEmpuje: { min: 32.07  , max: 39.20 },
-  vibracionAxial: { min: -0.41 , max: -0.39 },
-  voltajeBarra: { min: 6431.91, max: 6779.75 },
+  corriente: { min: undefined, max: undefined },
+  salidaAgua: { min:undefined, max: undefined },
+  presionAgua: { min: undefined , max: undefined },
+  generacionGas: { min: undefined , max: undefined },
+  temperaturaAbiente: { min: undefined , max: undefined },
+  temperaturaDescansoBomba1A: { min: undefined , max: undefined },
+  temperaturaDescansoMotorBomba: { min: undefined , max: undefined },
+  temperaturaInternaEmpuje: { min:  undefined , max: undefined },
+  vibracionAxial: { min: undefined , max: undefined },
+  voltajeBarra: { min: undefined, max:  undefined},
   
   // Nuevos sensores (rangos iniciales, ajustar según datos reales)
   excentricidadBomba: { min: undefined, max: undefined },
