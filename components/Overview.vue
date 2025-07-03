@@ -410,9 +410,23 @@
         >
           Bomba A
         </h3>
+        <button 
+          @click="toggleIframeViewA"
+          class="flex items-center gap-2 py-1 px-3 text-xs rounded-lg shadow transition duration-300 ease-in-out"
+          :class="isIframeViewA 
+            ? (props.isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-500 text-white hover:bg-red-600') 
+            : (props.isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600')"
+        >
+          <svg v-if="!isIframeViewA" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" /></svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          {{ isIframeViewA ? 'Volver' : 'Historial' }}
+        </button>
       </div>
 
-      <div class="flex flex-col items-center">
+      <div v-if="isIframeViewA" class="w-full" style="height: 400px;">
+        <iframe :src="iframeUrlA" class="w-full h-full border-0" title="Dashboard Bomba A" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div v-else class="flex flex-col items-center">
         <div class="w-full h-48 sm:h-72">
           <canvas ref="bomba1Canvas"></canvas>
         </div>
@@ -452,9 +466,23 @@
         >
           Bomba B
         </h3>
+         <button 
+          @click="toggleIframeViewB"
+          class="flex items-center gap-2 py-1 px-3 text-xs rounded-lg shadow transition duration-300 ease-in-out"
+          :class="isIframeViewB 
+            ? (props.isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-500 text-white hover:bg-red-600') 
+            : (props.isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600')"
+        >
+          <svg v-if="!isIframeViewB" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" /></svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          {{ isIframeViewB ? 'Volver' : 'Historial' }}
+        </button>
       </div>
 
-      <div class="flex flex-col items-center">
+      <div v-if="isIframeViewB" class="w-full" style="height: 400px;">
+        <iframe :src="iframeUrlB" class="w-full h-full border-0" title="Dashboard Bomba B" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div v-else class="flex flex-col items-center">
         <div class="w-full h-48 sm:h-72">
           <canvas ref="bomba2Canvas"></canvas>
         </div>
@@ -665,6 +693,24 @@ const { prediccionesBombab, isLoadingPrediccionesBombab, errorPrediccionesBombab
 
 const bomba1Canvas = ref(null);
 const bomba2Canvas = ref(null);
+
+// Estado para Power BI
+const isIframeViewA = ref(false);
+const isIframeViewB = ref(false);
+const iframeUrlA = 'https://app.powerbi.com/view?r=eyJrIjoiNDJhNzNlZTctZDgyYy00YTIxLTg3NGYtY2QwZjc3ODVkNDNmIiwidCI6ImRkNzcxMmUzLWRkZjQtNDNkMy04YjhlLTYzNjc3NjIyYzc3OSIsImMiOjR9';
+const iframeUrlB = 'https://app.powerbi.com/view?r=eyJrIjoiZGFiMjk1ZWQtYjhlZi00MjgzLTg0OTMtYmZlOWQyNTUyMjhmIiwidCI6ImRkNzcxMmUzLWRkZjQtNDNkMy04YjhlLTYzNjc3NjIyYzc3OSIsImMiOjR9';
+
+const toggleIframeViewA = () => {
+  isIframeViewA.value = !isIframeViewA.value;
+  actualizarGraficos();
+  
+};
+
+const toggleIframeViewB = () => {
+  isIframeViewB.value = !isIframeViewB.value;
+  actualizarGraficos();
+  
+};
 
 // Colores dinámicos para los datasets de Bomba A
 const bombaA_borderColor = computed(() => props.isDarkMode ? 'rgba(255, 99, 132, 1)' : 'rgba(239, 68, 68, 1)');

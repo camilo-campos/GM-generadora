@@ -443,7 +443,7 @@ Chart.register(...registerables);
 
 // Control de vista de iframe
 const isIframeView = ref(false);
-const iframeUrl = ref('https://app.powerbi.com/view?r=eyJrIjoiNDA3YjYwN2QtNzNjZS00MjZjLTgwYjktZTEyZDAyNmJlZDU4IiwidCI6ImRkNzcxMmUzLWRkZjQtNDNkMy04YjhlLTYzNjc3NjIyYzc3OSIsImMiOjR9');
+const iframeUrl = ref('https://app.powerbi.com/view?r=eyJrIjoiODhkYTc1YWMtNmZkOC00Nzk5LThiNjAtYzM5NjMxMTI0OGFkIiwidCI6ImRkNzcxMmUzLWRkZjQtNDNkMy04YjhlLTYzNjc3NjIyYzc3OSIsImMiOjR9');
 
 // Estado para guardar qué gráficos estaban activos antes de mostrar el iframe
 const activeChartsBeforeIframe = reactive({
