@@ -1,13 +1,16 @@
 <template>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-    <div class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-        <h3 
-          class="text-base sm:text-lg font-medium"
-          :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
-        >
-          Alertas de Sensores
-        </h3>
+  <!-- Layout principal: Alertas/Bitácoras a la izquierda, Gráficos a la derecha -->
+  <div class="flex gap-6 mb-6 min-h-[600px] overflow-x-auto">
+    <!-- Columna izquierda: Alertas y Bitácoras -->
+    <div class="flex-shrink-0 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+          <h3 
+            class="text-base sm:text-lg font-medium"
+            :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
+          >
+            Alertas de Sensores
+          </h3>
         
         <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
           <button 
@@ -77,7 +80,7 @@
           No se encontraron resultados para el filtro seleccionado.
         </div>
         
-        <div v-else class="space-y-3 flex-grow overflow-auto">
+        <div v-else class="space-y-3 flex-grow overflow-y-auto">
           <div
             v-for="alerta in alertasPaginadas"
             :key="alerta.id"
@@ -128,7 +131,7 @@
               </span>
             </div>
             
-            <p class="mt-2 text-sm line-clamp-2" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">
+            <p class="mt-2 text-sm" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">
               {{ alerta.descripcion }}
             </p>
           </div>
@@ -182,14 +185,14 @@
       </div>
     </div>
 
-    <div class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-        <h3 
-          class="text-base sm:text-lg font-medium"
-          :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
-        >
-          Bitacoras de Alertas y Avisos
-        </h3>
+      <div class="rounded-lg shadow p-4 sm:p-6 h-full flex flex-col" :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+          <h3 
+            class="text-base sm:text-lg font-medium"
+            :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
+          >
+            Bitacoras de Alertas y Avisos
+          </h3>
         
         <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
           <button 
@@ -238,7 +241,7 @@
         </div>
       </div>
       
-      <div v-else class="flex-grow flex flex-col">
+      <div v-else class="flex-grow flex flex-col overflow-hidden">
         <div v-if="bitacorasConAlerta.length === 0" class="h-full flex items-center justify-center" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">
           No se encontraron alertas ni avisos.
         </div>
@@ -247,7 +250,7 @@
           No se encontraron resultados para el filtro seleccionado.
         </div>
         
-        <div v-else class="space-y-3 flex-grow overflow-auto">
+        <div v-else class="space-y-3 flex-grow overflow-y-auto">
           <div
             v-for="alerta in bitacorasPaginadas"
             :key="alerta.id"
@@ -343,8 +346,11 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
-  </div>
+
+    <!-- Columna derecha: Gráficos -->
+    <div class="flex-shrink-0 w-full max-w-2xl space-y-6">
 
   <div class="flex flex-wrap items-center justify-between mb-4">
     <div class="flex flex-wrap gap-2">
@@ -377,114 +383,115 @@
     </button>
   </div>
 
-  <div class="grid grid-cols-1 gap-4 sm:gap-6">
-    <div 
-      v-if="!dataStatus.bomba1Ready" 
-      class="rounded-lg shadow p-4 sm:p-6 min-h-[320px] flex items-center justify-center relative overflow-hidden"
-      :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
-    >
-      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-50 to-transparent opacity-10 animate-pulse"></div>
+      <div 
+        v-if="!dataStatus.bomba1Ready" 
+        class="rounded-lg shadow p-4 sm:p-6 min-h-[320px] flex items-center justify-center relative overflow-hidden"
+        :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
+      >
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-50 to-transparent opacity-10 animate-pulse"></div>
+        
+        <div class="flex flex-col items-center z-10">
+          <div class="h-14 w-14 rounded-full border-4 border-gray-200 border-t-red-600 animate-spin mb-4"></div>
+          
+          <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo predicciones de la bomba A</p>
+          <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando datos de probabilidad de fallas</p>
+          
+          <div class="w-48 h-1.5 bg-gray-200 rounded-full mt-4 overflow-hidden">
+            <div class="h-full bg-red-600 animate-pulse" style="width: 70%"></div>
+          </div>
+          
+          <p class="text-xs mt-2" :class="props.isDarkMode ? 'text-gray-500' : 'text-gray-400'">Este proceso puede tardar unos segundos...</p>
+        </div>
+      </div>
       
-      <div class="flex flex-col items-center z-10">
-        <div class="h-14 w-14 rounded-full border-4 border-gray-200 border-t-red-600 animate-spin mb-4"></div>
-        
-        <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo predicciones de la bomba A</p>
-        <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando datos de probabilidad de fallas</p>
-        
-        <div class="w-48 h-1.5 bg-gray-200 rounded-full mt-4 overflow-hidden">
-          <div class="h-full bg-red-600 animate-pulse" style="width: 70%"></div>
+      <div
+        v-else
+        class="rounded-lg shadow p-4 sm:p-6"
+        :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
+      >
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+          <h3
+            class="text-base sm:text-lg font-medium"
+            :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
+          >
+            Bomba A
+          </h3>
+          <button 
+            @click="toggleIframeViewA"
+            class="flex items-center gap-2 py-1 px-3 text-xs rounded-lg shadow transition duration-300 ease-in-out"
+            :class="isIframeViewA 
+              ? (props.isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-500 text-white hover:bg-red-600') 
+              : (props.isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600')"
+          >
+            <svg v-if="!isIframeViewA" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" /></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            {{ isIframeViewA ? 'Volver' : 'Historial' }}
+          </button>
         </div>
-        
-        <p class="text-xs mt-2" :class="props.isDarkMode ? 'text-gray-500' : 'text-gray-400'">Este proceso puede tardar unos segundos...</p>
-      </div>
-    </div>
-    <div
-      v-else
-      class="rounded-lg shadow p-4 sm:p-6"
-      :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
-    >
-      <div class="flex items-center justify-between mb-3 sm:mb-4">
-        <h3
-          class="text-base sm:text-lg font-medium"
-          :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
-        >
-          Bomba A
-        </h3>
-        <button 
-          @click="toggleIframeViewA"
-          class="flex items-center gap-2 py-1 px-3 text-xs rounded-lg shadow transition duration-300 ease-in-out"
-          :class="isIframeViewA 
-            ? (props.isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-500 text-white hover:bg-red-600') 
-            : (props.isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600')"
-        >
-          <svg v-if="!isIframeViewA" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" /></svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-          {{ isIframeViewA ? 'Volver' : 'Historial' }}
-        </button>
-      </div>
 
-      <div v-if="isIframeViewA" class="w-full" style="height: 400px;">
-        <iframe :src="iframeUrlA" class="w-full h-full border-0" title="Dashboard Bomba A" allowfullscreen loading="lazy"></iframe>
-      </div>
-      <div v-else class="flex flex-col items-center">
-        <div class="w-full h-48 sm:h-72">
-          <canvas ref="bomba1Canvas"></canvas>
+        <div v-if="isIframeViewA" class="w-full" style="height: 400px;">
+          <iframe :src="iframeUrlA" class="w-full h-full border-0" title="Dashboard Bomba A" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div v-else class="flex flex-col items-center">
+          <div class="w-full h-64 sm:h-80 lg:h-96">
+            <canvas ref="bomba1Canvas"></canvas>
+          </div>
         </div>
       </div>
-    </div>
 
-
-    <div
-      v-if="!dataStatus.bomba2Ready" 
-      class="rounded-lg shadow p-4 sm:p-6 min-h-[320px] flex items-center justify-center relative overflow-hidden"
-      :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
-    >
-      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-blue-50 to-transparent opacity-10 animate-pulse"></div>
+      <div
+        v-if="!dataStatus.bomba2Ready" 
+        class="rounded-lg shadow p-4 sm:p-6 min-h-[320px] flex items-center justify-center relative overflow-hidden"
+        :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
+      >
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-blue-50 to-transparent opacity-10 animate-pulse"></div>
+        
+        <div class="flex flex-col items-center z-10">
+          <div class="h-14 w-14 rounded-full border-4 border-gray-200 border-t-blue-600 animate-spin mb-4"></div>
+          
+          <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo predicciones de la bomba B</p>
+          <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando datos de probabilidad de fallas</p>
+          
+          <div class="w-48 h-1.5 bg-gray-200 rounded-full mt-4 overflow-hidden">
+            <div class="h-full bg-blue-600 animate-pulse" style="width: 70%"></div>
+          </div>
+          
+          <p class="text-xs mt-2" :class="props.isDarkMode ? 'text-gray-500' : 'text-gray-400'">Este proceso puede tardar unos segundos...</p>
+        </div>
+      </div>
       
-      <div class="flex flex-col items-center z-10">
-        <div class="h-14 w-14 rounded-full border-4 border-gray-200 border-t-blue-600 animate-spin mb-4"></div>
-        
-        <p class="font-medium" :class="props.isDarkMode ? 'text-gray-200' : 'text-gray-700'">Obteniendo predicciones de la bomba B</p>
-        <p class="text-sm mt-1" :class="props.isDarkMode ? 'text-gray-400' : 'text-gray-500'">Consultando datos de probabilidad de fallas</p>
-        
-        <div class="w-48 h-1.5 bg-gray-200 rounded-full mt-4 overflow-hidden">
-          <div class="h-full bg-blue-600 animate-pulse" style="width: 70%"></div>
+      <div
+        v-else
+        class="rounded-lg shadow p-4 sm:p-6"
+        :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
+      >
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+          <h3
+            class="text-base sm:text-lg font-medium"
+            :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
+          >
+            Bomba B
+          </h3>
+          <button 
+            @click="toggleIframeViewB"
+            class="flex items-center gap-2 py-1 px-3 text-xs rounded-lg shadow transition duration-300 ease-in-out"
+            :class="isIframeViewB 
+              ? (props.isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-500 text-white hover:bg-red-600') 
+              : (props.isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600')"
+          >
+            <svg v-if="!isIframeViewB" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" /></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            {{ isIframeViewB ? 'Volver' : 'Historial' }}
+          </button>
         </div>
-        
-        <p class="text-xs mt-2" :class="props.isDarkMode ? 'text-gray-500' : 'text-gray-400'">Este proceso puede tardar unos segundos...</p>
-      </div>
-    </div>
-    <div
-      v-else
-      class="rounded-lg shadow p-4 sm:p-6"
-      :class="props.isDarkMode ? 'bg-gray-800' : 'bg-white'"
-    >
-      <div class="flex items-center justify-between mb-3 sm:mb-4">
-        <h3
-          class="text-base sm:text-lg font-medium"
-          :class="props.isDarkMode ? 'text-white' : 'text-[#2E4053]'"
-        >
-          Bomba B
-        </h3>
-         <button 
-          @click="toggleIframeViewB"
-          class="flex items-center gap-2 py-1 px-3 text-xs rounded-lg shadow transition duration-300 ease-in-out"
-          :class="isIframeViewB 
-            ? (props.isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-500 text-white hover:bg-red-600') 
-            : (props.isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-500 text-white hover:bg-blue-600')"
-        >
-          <svg v-if="!isIframeViewB" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" /></svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-          {{ isIframeViewB ? 'Volver' : 'Historial' }}
-        </button>
-      </div>
 
-      <div v-if="isIframeViewB" class="w-full" style="height: 400px;">
-        <iframe :src="iframeUrlB" class="w-full h-full border-0" title="Dashboard Bomba B" allowfullscreen loading="lazy"></iframe>
-      </div>
-      <div v-else class="flex flex-col items-center">
-        <div class="w-full h-48 sm:h-72">
-          <canvas ref="bomba2Canvas"></canvas>
+        <div v-if="isIframeViewB" class="w-full" style="height: 400px;">
+          <iframe :src="iframeUrlB" class="w-full h-full border-0" title="Dashboard Bomba B" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div v-else class="flex flex-col items-center">
+          <div class="w-full h-64 sm:h-80 lg:h-96">
+            <canvas ref="bomba2Canvas"></canvas>
+          </div>
         </div>
       </div>
     </div>
