@@ -4,21 +4,22 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     // Valores predeterminados
     const isAuthenticated = ref(false)
     const userInfo = ref(null)
-    
-    // Usamos URLs directamente desde variables de entorno para evitar problemas de configuración
-    const clientId = '25e71bc4-15ee-4837-946a-ecf8015c775c' // IBM_APPID_CLIENT_ID
-    const clientSecret = 'MTg3MmJhYWItMjljOC00NDcxLWExM2EtZDEzYzlkODZkZTIy' // IBM_APPID_CLIENT_SECRET
-    const discoveryUrl = 'https://us-south.appid.cloud.ibm.com/oauth/v4/85e29de8-031c-4ea9-baf3-4d196998a2bb/.well-known/openid-configuration'
-    
+
+    // Obtener configuración desde runtime config
+    const config = useRuntimeConfig()
+    const clientId = config.public.ibmAppId.clientId
+    const discoveryUrl = config.public.ibmAppId.discoveryUrl
+    const azureIdp = config.public.ibmAppId.azureIdp
+
     // Objeto auth con métodos básicos
     const auth = {
       isAuthenticated,
       userInfo,
       login: () => {
         if (process.server) return
-        
-        // URL hardcoded para pruebas
-        const authUrl = `https://us-south.appid.cloud.ibm.com/oauth/v4/85e29de8-031c-4ea9-baf3-4d196998a2bb/authorization?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(window.location.origin + '/callback')}&scope=openid%20profile&identity_provider=azure`
+
+        // Construir URL de autorización con variables de entorno
+        const authUrl = `${discoveryUrl.replace('/.well-known/openid-configuration', '')}/authorization?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(window.location.origin + '/callback')}&scope=openid%20profile&identity_provider=${azureIdp}`
         window.location.href = authUrl
       },
       handleCallback: async (code) => {

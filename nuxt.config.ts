@@ -24,7 +24,7 @@ export default defineNuxtConfig({
 
     // Variables públicas (cliente y servidor)
     public: {
-      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud',
+      apiUrl: process.env.NUXT_PUBLIC_API_URL,
       ibmAppId: {
         clientId: process.env.IBM_APPID_CLIENT_ID,
         discoveryUrl: process.env.IBM_APPID_DISCOVERY_URL,
