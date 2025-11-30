@@ -134,6 +134,20 @@
             <p class="mt-2 text-sm" :class="props.isDarkMode ? 'text-gray-300' : 'text-gray-700'">
               {{ alerta.descripcion }}
             </p>
+
+            <!-- Botón para ver gráfico de anomalía si está disponible -->
+            <div v-if="alerta.tiene_datos_anomalia" class="mt-3">
+              <button
+                @click="verGraficoAnomalia(alerta)"
+                class="text-xs font-semibold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-sm hover:shadow-md"
+                :class="getBotonAnomaliaClases(obtenerTipoAlerta(alerta))"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                </svg>
+                Ver gráfico de anomalía
+              </button>
+            </div>
           </div>
         </div>
         
@@ -609,6 +623,40 @@ const getAlertaClaseBadge = (tipo) => {
   }
 }
 
+// Función para obtener clases del botón de anomalía según el tipo de alerta
+const getBotonAnomaliaClases = (tipo) => {
+  if (props.isDarkMode) {
+    switch (tipo) {
+      case 'CRITICAL': return 'bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-500 hover:to-red-500 border border-orange-400'
+      case 'ALERT': return 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:from-blue-500 hover:to-cyan-500 border border-blue-400'
+      case 'AVISO': return 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white hover:from-teal-500 hover:to-emerald-500 border border-teal-400'
+      default: return 'bg-gray-700 text-white hover:bg-gray-600 border border-gray-500'
+    }
+  } else {
+    switch (tipo) {
+      case 'CRITICAL': return 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:scale-105'
+      case 'ALERT': return 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 hover:scale-105'
+      case 'AVISO': return 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 hover:scale-105'
+      default: return 'bg-gray-600 text-white hover:bg-gray-700 hover:scale-105'
+    }
+  }
+}
+
+// Función para navegar al gráfico de anomalía
+const verGraficoAnomalia = (alerta) => {
+  // Determinar a qué página navegar basándose en la descripción
+  // La descripción contiene "BOMBA A" o "BOMBA B"
+  const desc = alerta.descripcion || '';
+  const esBombaA = desc.includes('BOMBA A');
+  const paginaDestino = esBombaA ? 'anomaliasA' : 'anomaliasB';
+
+  // Emitir evento al componente padre con la página y el sensor a seleccionar
+  emit('navegar-anomalia', {
+    pagina: paginaDestino,
+    sensorTipo: alerta.tipo_sensor
+  });
+}
+
 // Propiedad computada para aplicar el filtro seleccionado
 const alertasFiltradas = computed(() => {
   if (!alertas.value || !Array.isArray(alertas.value)) return []
@@ -681,6 +729,8 @@ const props = defineProps({
     default: false,
   },
 });
+
+const emit = defineEmits(['navegar-anomalia']);
 
 // Observar cambios en el tema para actualizar los gráficos
 watch(() => props.isDarkMode, (newValue) => {

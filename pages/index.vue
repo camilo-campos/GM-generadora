@@ -104,7 +104,13 @@
         <!-- Dashboard Content with KeepAlive -->
         <main class="p-4 sm:p-6">
           <KeepAlive>
-            <component :is="currentComponent" :currentView="currentView" :isDarkMode="isDarkMode" />
+            <component
+              :is="currentComponent"
+              :currentView="currentView"
+              :isDarkMode="isDarkMode"
+              :sensorSeleccionado="sensorSeleccionadoAnomalia"
+              @navegar-anomalia="handleNavegarAnomalia"
+            />
           </KeepAlive>
         </main>
       </div>
@@ -156,6 +162,8 @@ const Sensors = defineAsyncComponent(() => import('../components/Sensors.vue'));
 const Logs = defineAsyncComponent(() => import('../components/Logs.vue'));
 const sensorsB = defineAsyncComponent(() => import('../components/SensorsB.vue'));
 const logsB = defineAsyncComponent(() => import('../components/LogsB.vue'));
+const AnalisisAnomaliasA = defineAsyncComponent(() => import('../components/AnalisisAnomaliasA.vue'));
+const AnalisisAnomaliasB = defineAsyncComponent(() => import('../components/AnalisisAnomaliasB.vue'));
 
 // Determinar qué componente mostrar basado en la vista activa
 const currentComponent = computed(() => {
@@ -165,6 +173,8 @@ const currentComponent = computed(() => {
     case 'logs': return Logs;
     case 'sensorsB': return sensorsB;
     case 'logsB': return logsB;
+    case 'anomaliasA': return AnalisisAnomaliasA;
+    case 'anomaliasB': return AnalisisAnomaliasB;
     default: return Overview;
   }
 });
@@ -177,21 +187,31 @@ const selectNavItem = (id) => {
   }
 };
 
+// Manejar navegación desde alertas a gráficos de anomalías
+const handleNavegarAnomalia = (datos) => {
+  // Guardar el sensor a seleccionar
+  sensorSeleccionadoAnomalia.value = datos.sensorTipo;
+
+  // Navegar a la página correspondiente
+  selectNavItem(datos.pagina);
+};
+
 // Navigation items - definidos fuera de cualquier función
 const navItems = [
 {
     section: "general",
     items: [
       { id: "overview", name: "Visión general", icon: "ChartBarIcon" },
-      
+
     ]
   },
   {
     section: "Bomba A",
     items: [
-      
+
       { id: "logs", name: "Clasificación de registros A", icon: "ListBulletIcon" },
       { id: "sensors", name: "Análisis de fallas A", icon: "SignalIcon" },
+      { id: "anomaliasA", name: "Análisis de anomalías A", icon: "ExclamationTriangleIcon" },
     ]
   },
   {
@@ -199,6 +219,7 @@ const navItems = [
     items: [
       { id: "logsB", name: "Clasificación de registros B", icon: "ListBulletIcon" },
       { id: "sensorsB", name: "Análisis de fallas B", icon: "SignalIcon" },
+      { id: "anomaliasB", name: "Análisis de anomalías B", icon: "ExclamationTriangleIcon" },
     ]
   }
 ];
@@ -208,6 +229,9 @@ const activeView = ref("overview");
 
 // Chart period state
 const chartPeriod = ref("semana");
+
+// Sensor seleccionado para anomalías
+const sensorSeleccionadoAnomalia = ref(null);
 
 // Definir la configuración de vistas fuera del componente para mejorar rendimiento
 const viewConfigMap = {
@@ -243,6 +267,14 @@ watch(activeView, (nuevoValor, valorPrevio) => {
       myChart.value.destroy();
       myChart.value = null;
     }
+  }
+
+  // Resetear sensor seleccionado después de que se haya usado
+  // Timeout para dar tiempo a que el componente lo reciba
+  if (nuevoValor !== 'anomaliasA' && nuevoValor !== 'anomaliasB') {
+    setTimeout(() => {
+      sensorSeleccionadoAnomalia.value = null;
+    }, 500);
   }
 });
 

@@ -1,7 +1,4 @@
 import { useQuery } from "@tanstack/vue-query";
-//http://127.0.0.1:8000
-//https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud
-const API_BASE = "https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores";
 
 type RangoFecha = {
   inicio: string;
@@ -9,7 +6,8 @@ type RangoFecha = {
 };
 
 const fetchRango = async (tipo: string): Promise<RangoFecha> => {
-  const response = await fetch(`${API_BASE}/${tipo}/rango`);
+  const { apiUrl } = useRuntimeConfig().public;
+  const response = await fetch(`${apiUrl}/sensores/${tipo}/rango`);
   if (!response.ok) {
     throw new Error(`Error al obtener rango para ${tipo}`);
   }

@@ -1,10 +1,8 @@
 import { useQuery } from "@tanstack/vue-query";
-//http://127.0.0.1:8000
-//https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud
+
 const fetchSensores = async (tipo: string) => {
-  const response = await fetch(
-    `https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores/${tipo}`
-  );
+  const { apiUrl } = useRuntimeConfig().public;
+  const response = await fetch(`${apiUrl}/sensores/${tipo}`);
   const data = await response.json();
   return data.data || data;
 };

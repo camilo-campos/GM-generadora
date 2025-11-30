@@ -1,14 +1,13 @@
 import { useQuery } from "@tanstack/vue-query";
 
-const API_BASE = "https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores";
-
 type RangoFecha = {
   inicio: string;
   termino: string;
 };
 
 const fetchSensorData = async (tipo: string, inicio: string, termino: string) => {
-  const url = new URL(`${API_BASE}/${tipo}`);
+  const { apiUrl } = useRuntimeConfig().public;
+  const url = new URL(`${apiUrl}/sensores/${tipo}`);
   url.searchParams.append("inicio", inicio);
   url.searchParams.append("termino", termino);
 

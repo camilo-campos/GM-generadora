@@ -2,18 +2,16 @@ import { useQuery } from "@tanstack/vue-query";
 
 // Función para obtener todas las bitácoras de la bomba B
 const fetchBitacorasB = async () => {
-  const response = await fetch(
-    "https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/bitacoras_b/todas"
-  );
+  const { apiUrl } = useRuntimeConfig().public;
+  const response = await fetch(`${apiUrl}/bitacoras_b/todas`);
   const data = await response.json();
   return data.data || data;
 };
 
 // Función para obtener las bitácoras de la bomba B que contienen fallas
 const fetchBitacorasFallasB = async () => {
-  const response = await fetch(
-    "https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/bitacoras_b/todas_fallas"
-  );
+  const { apiUrl } = useRuntimeConfig().public;
+  const response = await fetch(`${apiUrl}/bitacoras_b/todas_fallas`);
   const data = await response.json();
   return data.data || data;
 };

@@ -92,6 +92,9 @@ import { crearGrafico } from '@/utils/chartUtils';
 
 Chart.register(...registerables);
 
+// Obtener URL de la API desde configuración
+const { apiUrl } = useRuntimeConfig().public;
+
 // Props
 const props = defineProps({
   sensorConfig: {
@@ -199,7 +202,7 @@ async function obtenerDatosGenerico(sensorKey, fechaInicio, fechaTermino) {
   cargandoDatosLocal.value = true;
 
   try {
-    const url = `http://127.0.0.1:8000/sensores/${sensorKey}?inicio=${fechaInicio}&termino=${fechaTermino}`;
+    const url = `${apiUrl}/sensores/${sensorKey}?inicio=${fechaInicio}&termino=${fechaTermino}`;
     console.log('Consultando URL:', url);
 
     const response = await fetch(url);

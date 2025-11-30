@@ -152,6 +152,9 @@ import AnalisisSensorDetallado from './AnalisisSensorDetallado.vue';
 
 Chart.register(...registerables);
 
+// Obtener URL de la API desde configuración
+const { apiUrl } = useRuntimeConfig().public;
+
 // Props
 const props = defineProps({
   datos: {
@@ -365,7 +368,7 @@ async function obtenerDatos() {
   try {
     // En lugar de filtrar datos existentes, consultamos directamente al servidor para esas fechas
     // exactamente como en test.vue
-    const url = `https://backend-gm.1tfr3xva5g42.us-south.codeengine.appdomain.cloud/sensores/corriente?inicio=${fechaInicioCorriente.value}&termino=${fechaTerminoCorriente.value}`;
+    const url = `${apiUrl}/sensores/corriente?inicio=${fechaInicioCorriente.value}&termino=${fechaTerminoCorriente.value}`;
     console.log('Consultando URL:', url);
     
     const response = await fetch(url);
