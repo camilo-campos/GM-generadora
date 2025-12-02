@@ -7,9 +7,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
     // Obtener configuración desde runtime config
     const config = useRuntimeConfig()
-    const clientId = config.public.ibmAppId.clientId
-    const discoveryUrl = config.public.ibmAppId.discoveryUrl
-    const azureIdp = config.public.ibmAppId.azureIdp
+    const clientId = config.public.ibmAppId?.clientId
+    const discoveryUrl = config.public.ibmAppId?.discoveryUrl
+    const azureIdp = config.public.ibmAppId?.azureIdp
 
     // Objeto auth con métodos básicos
     const auth = {
@@ -18,9 +18,28 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       login: () => {
         if (process.server) return
 
-        // Construir URL de autorización con variables de entorno
-        const authUrl = `${discoveryUrl.replace('/.well-known/openid-configuration', '')}/authorization?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(window.location.origin + '/callback')}&scope=openid%20profile&identity_provider=${azureIdp}`
-        window.location.href = authUrl
+        // Validar que las variables existan
+        if (!clientId || !discoveryUrl || !azureIdp) {
+          console.error('❌ Variables de entorno de IBM App ID no configuradas correctamente')
+          console.error('Verifica que estas variables estén configuradas en IBM Cloud Code Engine:')
+          console.error('- IBM_APPID_CLIENT_ID')
+          console.error('- IBM_APPID_DISCOVERY_URL')
+          console.error('- IBM_APPID_AZURE_IDP')
+          alert('Error de configuración: Variables de autenticación no encontradas. Por favor contacta al administrador.')
+          return
+        }
+
+        try {
+          // Construir URL de autorización con variables de entorno
+          const baseUrl = discoveryUrl.replace('/.well-known/openid-configuration', '')
+          const authUrl = `${baseUrl}/authorization?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(window.location.origin + '/callback')}&scope=openid%20profile&identity_provider=${azureIdp}`
+
+          console.log('🔐 Redirigiendo a autenticación...')
+          window.location.href = authUrl
+        } catch (error) {
+          console.error('❌ Error al construir URL de autenticación:', error)
+          alert('Error al iniciar sesión. Por favor intenta nuevamente.')
+        }
       },
       handleCallback: async (code) => {
         if (process.server) return null
