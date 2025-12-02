@@ -1,4 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import dotenv from 'dotenv'
+dotenv.config()
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
@@ -23,17 +26,12 @@ export default defineNuxtConfig({
     },
 
     // Variables públicas (cliente y servidor)
-    // En IBM Code Engine, configura estas variables con prefijo NUXT_PUBLIC_:
-    // - NUXT_PUBLIC_API_URL
-    // - NUXT_PUBLIC_IBM_APPID_CLIENT_ID
-    // - NUXT_PUBLIC_IBM_APPID_DISCOVERY_URL
-    // - NUXT_PUBLIC_IBM_APPID_AZURE_IDP
     public: {
-      apiUrl: '',
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || '',
       ibmAppId: {
-        clientId: '',
-        discoveryUrl: '',
-        azureIdp: ''
+        clientId: process.env.IBM_APPID_CLIENT_ID || '',
+        discoveryUrl: process.env.IBM_APPID_DISCOVERY_URL || '',
+        azureIdp: process.env.IBM_APPID_AZURE_IDP || ''
       }
     }
   }

@@ -17,6 +17,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
     "nuxt": "^3.16.1",
     "openid-client": "^6.5.0",
     "vue": "^3.5.13",
