@@ -23,12 +23,17 @@ export default defineNuxtConfig({
     },
 
     // Variables públicas (cliente y servidor)
+    // En IBM Code Engine, configura estas variables con prefijo NUXT_PUBLIC_:
+    // - NUXT_PUBLIC_API_URL
+    // - NUXT_PUBLIC_IBM_APPID_CLIENT_ID
+    // - NUXT_PUBLIC_IBM_APPID_DISCOVERY_URL
+    // - NUXT_PUBLIC_IBM_APPID_AZURE_IDP
     public: {
-      apiUrl: process.env.NUXT_PUBLIC_API_URL,
+      apiUrl: '',
       ibmAppId: {
-        clientId: process.env.IBM_APPID_CLIENT_ID,
-        discoveryUrl: process.env.IBM_APPID_DISCOVERY_URL,
-        azureIdp: process.env.IBM_APPID_AZURE_IDP
+        clientId: '',
+        discoveryUrl: '',
+        azureIdp: ''
       }
     }
   }
