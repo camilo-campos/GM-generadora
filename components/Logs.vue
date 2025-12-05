@@ -254,13 +254,18 @@ const totalRegistros = computed(() => {
   return clasificacionValues.value.reduce((sum, val) => sum + val, 0);
 });
 
-// --- Gráfico 2: Subcategorías de HRSG Pump Failures ---
+// --- Gráfico 2: Subcategorías de Fallas de Bombas HRSG ---
 const hrsgSubcategoryCounts = computed(() => {
   const counts = {};
   if (!bitacoras.value) return counts;
   bitacoras.value.forEach((b) => {
-    if (b.clasificacion && b.clasificacion.includes("HRSG Pump Failures")) {
-      // Se asume que el formato es "HRSG Pump Failures - <subcategoría>"
+    // Buscar en inglés o español
+    if (b.clasificacion && (
+      b.clasificacion.includes("HRSG Pump Failures") ||
+      b.clasificacion.includes("Fallas de Bombas HRSG") ||
+      b.clasificacion.includes("Fallas de Bomba HRSG")
+    )) {
+      // Se asume que el formato es "Fallas de Bombas HRSG - <subcategoría>"
       const parts = b.clasificacion.split("-");
       const subcategory = parts[1]?.trim() || "Sin Subcategoría";
       counts[subcategory] = (counts[subcategory] || 0) + 1;
