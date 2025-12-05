@@ -77,14 +77,16 @@
       </div>
     </div>
 
-    <!-- Gráficos activos -->
-    <div v-if="sensoresActivos.length > 0" class="space-y-6">
-      <div v-for="sensorKey in sensoresActivos" :key="sensorKey">
-        <GraficoAnomalia
-          :alerta-id="obtenerAlertaIdPorSensor(sensorKey)"
-          :titulo="obtenerTituloSensor(sensorKey)"
-          :minutos-contexto="30"
-        />
+    <!-- Gráficos activos - Layout horizontal con scroll -->
+    <div v-if="sensoresActivos.length > 0" class="overflow-x-auto overflow-y-hidden mb-6 p-4">
+      <div class="flex gap-6 min-w-max">
+        <div v-for="sensorKey in sensoresActivos" :key="sensorKey" class="flex-shrink-0 w-[1030px]">
+          <GraficoAnomalia
+            :alerta-id="obtenerAlertaIdPorSensor(sensorKey)"
+            :titulo="obtenerTituloSensor(sensorKey)"
+            :minutos-contexto="30"
+          />
+        </div>
       </div>
     </div>
 
@@ -141,6 +143,18 @@ const SENSORES_CONFIG = {
   'prediccion_presion-gas': { label: 'Predicción Presión Gas', icon: '🔮', unit: 'bar' },
 };
 
+// Función para limpiar y formatear nombre de sensor
+const formatearNombreSensor = (nombre) => {
+  // Quitar prefijo 'prediccion_' o 'prediccion-'
+  let limpio = nombre.replace(/^prediccion[_-]/i, '');
+  // Reemplazar guiones bajos y guiones por espacios
+  limpio = limpio.replace(/[_-]/g, ' ');
+  // Capitalizar primera letra de cada palabra
+  return limpio.split(' ').map(word =>
+    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+  ).join(' ');
+};
+
 // Computed
 const sensoresConAnomalias = computed(() => sensoresConAnomaliasPorBomba.value.B || []);
 
@@ -149,7 +163,7 @@ const configuracionSensores = computed(() => {
     .map(tipoSensor => ({
       key: tipoSensor,
       ...(SENSORES_CONFIG[tipoSensor] || {
-        label: tipoSensor,
+        label: formatearNombreSensor(tipoSensor),
         icon: '📈',
         unit: ''
       })

@@ -524,7 +524,7 @@ import { usePrediccionesBombab } from "@/composables/usePrediccionBombasb";
 const { bitacoras, isLoading } = useBitacoras()
 const filtroActual = ref('TODOS')
 const paginaActual = ref(1)
-const elementosPorPagina = 4
+const elementosPorPagina = 3
 
 const bitacorasConAlerta = computed(() =>
   (bitacoras.value || []).filter(b => b.alerta_aviso != null)
@@ -558,7 +558,7 @@ watch(totalPaginas, n => {
 const { alertas, isLoading_alerta } = useAlertas()
 const filtroActualAlertas = ref('TODOS') // Valores posibles: 'TODOS', 'CRITICAL', 'ALERT', 'AVISO'
 const paginaActualAlertas = ref(1)
-const elementosPorPaginaAlertas = 4
+const elementosPorPaginaAlertas = 3
 
 // Función para determinar el tipo de alerta basado en la descripción
 const obtenerTipoAlerta = (alerta) => {
