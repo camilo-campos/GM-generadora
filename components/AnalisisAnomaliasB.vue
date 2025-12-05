@@ -85,6 +85,7 @@
             :alerta-id="obtenerAlertaIdPorSensor(sensorKey)"
             :titulo="obtenerTituloSensor(sensorKey)"
             :minutos-contexto="30"
+            bomba="B"
           />
         </div>
       </div>
@@ -197,7 +198,7 @@ const obtenerAlertaIdPorSensor = (sensorKey) => {
 
 const obtenerTituloSensor = (sensorKey) => {
   const config = SENSORES_CONFIG[sensorKey];
-  return config ? `${config.label} ${config.icon}` : sensorKey;
+  return config ? `${config.label} ${config.icon}` : formatearNombreSensor(sensorKey);
 };
 
 const refrescarAlertas = () => {

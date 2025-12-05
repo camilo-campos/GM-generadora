@@ -121,6 +121,11 @@ const props = defineProps({
   minutosContexto: {
     type: Number,
     default: 30
+  },
+  bomba: {
+    type: String,
+    required: true,
+    validator: (value) => ['A', 'B'].includes(value)
   }
 });
 
@@ -186,7 +191,7 @@ const cargarDatos = async () => {
   errorMensaje.value = null;
 
   try {
-    const url = `${apiUrl}/alertas_umbral/${props.alertaId}/datos_anomalia_contexto?minutos_antes=${props.minutosContexto}&minutos_despues=${props.minutosContexto}`;
+    const url = `${apiUrl}/alertas_umbral/${props.alertaId}/datos_anomalia_contexto?minutos_antes=${props.minutosContexto}&minutos_despues=${props.minutosContexto}&bomba=${props.bomba}`;
     console.log('Consultando URL:', url);
 
     const response = await fetch(url);
